@@ -24,13 +24,17 @@ async def info(ctx, username: str):
         ctx.reply('Invalid username.')
         return
 
+    # START EMBED
     reply_embed = discord.Embed(
         title=f"{user_data['username']}'s osu! Profile"
     )
+
+    reply_embed.add_field(name="Global Rank", value=f"#{user_data['statistics']['global_rank']:,}")
 
     if user_data['avatar_url'] == '/images/layout/avatar-guest.png':
         reply_embed.set_thumbnail(url="https://a.ppy.sh/")
     else:
         reply_embed.set_thumbnail(url=user_data['avatar_url'])
+    # END EMBED
 
     await ctx.reply(embed=reply_embed)

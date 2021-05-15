@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
+
 from scraping import *
+from datetime import date
+
 import os
 
 if os.getenv('PYCHARM_HOSTED'):
@@ -21,15 +24,38 @@ async def info(ctx, username: str):
     try:
         user_data = get_user_data(username)
     except:
-        ctx.reply('Invalid username.')
+        await ctx.reply('Invalid username.')
         return
+
+    global_rank = user_data['statistics']['global_rank']
+
+    try:
+        most_recent_month = user_data['monthly_playcounts'][-1]
+    except:
+        most_recent_month = {
+            'start_date': '2021-05-01',
+            'count': 0
+        }
+    plays_this_month = most_recent_month['count']
+    month_start = f"{str(date.today())[:-2]}01"
 
     # START EMBED
     reply_embed = discord.Embed(
-        title=f"{user_data['username']}'s osu! Profile"
+        title=f":flag_{user_data['country_code'].lower()}:{user_data['username']}'s osu! Profile"
     )
 
-    reply_embed.add_field(name="Global Rank", value=f"#{user_data['statistics']['global_rank']:,}")
+    reply_embed.add_field(
+        name="Global Rank",
+        value=f"#{global_rank:,}" if global_rank else "Unranked")
+    reply_embed.add_field(
+        name="pp",
+        value=f"{user_data['statistics']['pp']:,}"
+    )
+    reply_embed.add_field(
+        name='Plays this month',
+        value=f"{plays_this_month}" if most_recent_month['start_date'] == month_start else "0",
+        inline=False
+    )
 
     if user_data['avatar_url'] == '/images/layout/avatar-guest.png':
         reply_embed.set_thumbnail(url="https://a.ppy.sh/")

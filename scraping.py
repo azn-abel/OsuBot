@@ -3,7 +3,7 @@ import requests
 import json
 
 def main():
-    username = "yenator07" # input("Enter your osu! username: ").strip().lower()
+    username = "apotatoa" # input("Enter your osu! username: ").strip().lower()
     html_text = requests.get(f'https://osu.ppy.sh/users/{username}').text
 
     soup = BeautifulSoup(html_text, 'lxml')
@@ -33,6 +33,15 @@ def get_data(username, mode='osu'):
     user_data = json.loads(script[-2].contents[0].strip())
     play_data = json.loads(script[-4].contents[0].strip())
     return user_data, play_data
+
+
+def get_extras_data(username, mode='osu'):
+    user_html = requests.get(f'https://osu.ppy.sh/users/{username}/{mode}').text
+
+    user_soup = BeautifulSoup(user_html, 'lxml')
+    script = user_soup.find('script', id='json-extras')
+    extras_data = json.loads(script.contents[0].strip())
+    return extras_data
 
 
 def convert_time(seconds):

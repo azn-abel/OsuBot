@@ -121,6 +121,58 @@ async def info(ctx, username: str, *args: str):
     await ctx.reply(embed=reply_embed)
 
 
+@client.command(aliases=['r'])
+async def recent(ctx, username: str, *args: str):
+
+    if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:
+        mode = 'fruits' if args[0] == 'catch' else args[0]
+        arg = 'catch' if args[0] == 'fruits' else args[0]
+    else:
+        mode = 'osu'
+        arg = False
+
+    try:
+        user_data, extra_data = get_data(username, mode)
+    except:
+        await ctx.reply('Invalid username.')
+        return
+
+    try:
+        recent_play_data = extra_data['scoresRecent'][0]
+        beatmapset = recent_play_data['beatmapset']
+    except:
+        await ctx.reply("No recent plays.")
+        return
+    mods_string = ''
+    for mod in recent_play_data['mods']:
+        mods_string += f"{mod} "
+    recent_embed = discord.Embed(
+        description=f'Modifiers: {mods_string}' if recent_play_data['mods'] else None,
+        colour=discord.Colour.blue()
+    )
+    recent_embed.set_author(
+        name=f"{beatmapset['title']} [{recent_play_data['beatmap']['version']}] {recent_play_data['beatmap']['difficulty_rating']}★",
+        icon_url="https://a.ppy.sh/" if user_data['avatar_url'] == '/images/layout/avatar-guest.png' else user_data['avatar_url'],
+        url=f"https://osu.ppy.sh/scores/osu/{recent_play_data['best_id']}" if recent_play_data['best_id'] else recent_play_data['beatmap']['url']
+    )
+    recent_embed.set_thumbnail(
+        url=recent_play_data['beatmapset']['covers']['list']
+    )
+    stats = recent_play_data['statistics']
+    recent_embed.add_field(
+        name=f'Rank: {recent_play_data["rank"]} FC' if recent_play_data['perfect'] else f'Rank: {recent_play_data["rank"]}',
+        value=f"- **Accuracy:** {round(recent_play_data['accuracy'] * 100, 2)}% "
+              f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
+              f"- **Score:** {recent_play_data['score']}\n"
+              f"- **Combo:** {recent_play_data['max_combo']}\n"
+              f"- **pp:** {recent_play_data['pp'] if recent_play_data['pp'] else 'N/A'}",
+
+        inline=False
+    )
+
+    await ctx.reply(embed=recent_embed)
+
+
 @client.event
 async def on_ready():
     print('Osu Rankings is online!')

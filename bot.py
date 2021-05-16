@@ -53,7 +53,8 @@ async def info(ctx, username: str, *args: str):
 
     # START EMBED
     reply_embed = discord.Embed(
-        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile"
+        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile",
+        colour=discord.Colour.blue()
     )
 
     reply_embed.add_field(

@@ -25,8 +25,8 @@ def main():
     print(avatar_url)
 
 
-def get_data(username):
-    user_html = requests.get(f'https://osu.ppy.sh/users/{username}').text
+def get_data(username, mode='osu'):
+    user_html = requests.get(f'https://osu.ppy.sh/users/{username}/{mode}').text
 
     user_soup = BeautifulSoup(user_html, 'lxml')
     script = user_soup.find_all('script')

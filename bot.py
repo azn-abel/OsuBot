@@ -19,10 +19,18 @@ async def ping(ctx):
     await ctx.reply('pong!')
 
 
-@client.command()
-async def info(ctx, username: str):
+@client.command(aliases=['i'])
+async def info(ctx, username: str, *args: str):
+
+    if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:
+        mode = 'fruits' if args[0] == 'catch' else args[0]
+        arg = 'catch' if args[0] == 'fruits' else args[0]
+    else:
+        mode = 'osu'
+        arg = False
+
     try:
-        user_data, play_data = get_data(username)
+        user_data, play_data = get_data(username, mode)
     except:
         await ctx.reply('Invalid username.')
         return
@@ -45,7 +53,7 @@ async def info(ctx, username: str):
 
     # START EMBED
     reply_embed = discord.Embed(
-        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu! Profile"
+        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile"
     )
 
     reply_embed.add_field(
@@ -68,26 +76,41 @@ async def info(ctx, username: str):
         value=str(len(user_data['user_achievements']))
     )
 
-    beatmapset = top_play['beatmapset']
-    reply_embed.add_field(
-        name='Top Play',
-        value=f"- **Name:** {beatmapset['title']} [{top_play['beatmap']['version']}]\n"
-              f"- **Artist:** {beatmapset['artist']}\n"
-              f"- **Mapper:** {beatmapset['creator']}\n",
+    try:
+        beatmapset = top_play['beatmapset']
+        reply_embed.add_field(
+            name='Top Play',
+            value=f"- **Name:** {beatmapset['title']} [{top_play['beatmap']['version']}]\n"
+                  f"- **Artist:** {beatmapset['artist']}\n"
+                  f"- **Mapper:** {beatmapset['creator']}\n",
 
-        inline=False
-    )
+            inline=False
+        )
+    except:
+        reply_embed.add_field(
+            name='Top Play',
+            value="No plays",
 
-    beatmapset = most_played['beatmapset']
-    reply_embed.add_field(
-        name='Most Played Beatmap',
-        value=f"- **Name:** {beatmapset['title']} [{most_played['beatmap']['version']}]\n"
-              f"- **Artist:** {beatmapset['artist']}\n"
-              f"- **Mapper:** {beatmapset['creator']}\n"
-              f"- **Plays:** {most_played['count']}" if most_played else "bruh",
+            inline=False
+        )
+    try:
+        beatmapset = most_played['beatmapset']
+        reply_embed.add_field(
+            name='Most Played Beatmap',
+            value=f"- **Name:** {beatmapset['title']} [{most_played['beatmap']['version']}]\n"
+                  f"- **Artist:** {beatmapset['artist']}\n"
+                  f"- **Mapper:** {beatmapset['creator']}\n"
+                  f"- **Plays:** {most_played['count']}" if most_played else "bruh",
 
-        inline=False
-    )
+            inline=False
+        )
+    except:
+        reply_embed.add_field(
+            name='Top Play',
+            value="No plays",
+
+            inline=False
+        )
 
     if user_data['avatar_url'] == '/images/layout/avatar-guest.png':
         reply_embed.set_thumbnail(url="https://a.ppy.sh/")
@@ -100,4 +123,5 @@ async def info(ctx, username: str):
 
 @client.event
 async def on_ready():
+    print('Osu Rankings is online!')
     await client.change_presence(activity=discord.Game(name="osu!"))

@@ -3,7 +3,7 @@ import requests
 import json
 
 def main():
-    username = "apotatoa" # input("Enter your osu! username: ").strip().lower()
+    username = "bruce_ow" # input("Enter your osu! username: ").strip().lower()
     html_text = requests.get(f'https://osu.ppy.sh/users/{username}').text
 
     soup = BeautifulSoup(html_text, 'lxml')
@@ -29,9 +29,9 @@ def get_data(username, mode='osu'):
     user_html = requests.get(f'https://osu.ppy.sh/users/{username}/{mode}').text
 
     user_soup = BeautifulSoup(user_html, 'lxml')
-    script = user_soup.find_all('script')
-    user_data = json.loads(script[-2].contents[0].strip())
-    play_data = json.loads(script[-4].contents[0].strip())
+    scripts = user_soup.find_all('script')
+    user_data = json.loads(scripts[-2].contents[0].strip())
+    play_data = json.loads(scripts[-4].contents[0].strip())
     return user_data, play_data
 
 

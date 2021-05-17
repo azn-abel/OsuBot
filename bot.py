@@ -19,7 +19,7 @@ async def ping(ctx):
     await ctx.reply('pong!')
 
 
-@client.command(aliases=['i'])
+@client.command(aliases=['i', 'I'])
 async def info(ctx, username: str, *args: str):
 
     if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:
@@ -79,8 +79,10 @@ async def info(ctx, username: str, *args: str):
 
     try:
         beatmapset = top_play['beatmapset']
+        mods_string = f' +{", ".join(top_play["mods"])}'
+
         reply_embed.add_field(
-            name='Top Play',
+            name=f'Top Play ({top_play["rank"]}{" FC" if top_play["perfect"] else ""}{mods_string if top_play["mods"] else ""})',
             value=f"- **Name:** {beatmapset['title']} [{top_play['beatmap']['version']}]\n"
                   f"- **Artist:** {beatmapset['artist']}\n"
                   f"- **Mapper:** {beatmapset['creator']}\n",
@@ -122,7 +124,7 @@ async def info(ctx, username: str, *args: str):
     await ctx.reply(embed=reply_embed)
 
 
-@client.command(aliases=['r'])
+@client.command(aliases=['r', 'R'])
 async def recent(ctx, username: str, *args: str):
 
     if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:
@@ -176,5 +178,5 @@ async def recent(ctx, username: str, *args: str):
 
 @client.event
 async def on_ready():
-    print('Osu Rankings is online!')
+    print('osu! Rankings is online!')
     await client.change_presence(activity=discord.Game(name="osu!"))

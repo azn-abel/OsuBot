@@ -147,6 +147,7 @@ async def recent(ctx, username: str, *args: str):
     except:
         await ctx.reply("No recent plays.")
         return
+    beatmap_data = get_beatmap_data(recent_play_data['beatmap']['beatmapset_id'], recent_play_data['beatmap']['id'], mode)
     mods_string = ''
     for mod in recent_play_data['mods']:
         mods_string += f"{mod} "
@@ -171,7 +172,7 @@ async def recent(ctx, username: str, *args: str):
         value=f"- **Accuracy:** {round(recent_play_data['accuracy'] * 100, 2)}% "
               f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
               f"- **Score:** {recent_play_data['score']}\n"
-              f"- **Combo:** {recent_play_data['max_combo']}\n"
+              f"- **Combo:** {recent_play_data['max_combo']}/{beatmap_data['max_combo']}\n"
               f"- **pp:** {recent_play_data['pp'] if recent_play_data['pp'] else 'N/A'}",
 
         inline=False

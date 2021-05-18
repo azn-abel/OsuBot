@@ -2,8 +2,9 @@ from bs4 import BeautifulSoup
 import requests
 import json
 
+
 def main():
-    username = "bruce_ow" # input("Enter your osu! username: ").strip().lower()
+    username = "skip_2mylu"  # input("Enter your osu! username: ").strip().lower()
     html_text = requests.get(f'https://osu.ppy.sh/users/{username}').text
 
     soup = BeautifulSoup(html_text, 'lxml')
@@ -12,9 +13,9 @@ def main():
     avatar_url = user_data['avatar_url']
     global_rank = user_data['statistics']['global_rank']
     with open("data.json", "w") as outfile:
-        outfile.write(json.dumps(user_data, indent = 4))
+        outfile.write(json.dumps(user_data, indent=4))
     with open("most.json", "w") as outfile:
-        outfile.write(json.dumps(most_played, indent = 4))
+        outfile.write(json.dumps(most_played, indent=4))
     for script in soup.find_all('script')[-6:-1]:
         with open(f"{script['id'][5:]}.json", "w") as outfile:
             outfile.write(json.dumps(json.loads(script.contents[0].strip()), indent=4))
@@ -42,6 +43,15 @@ def get_extras_data(username, mode='osu'):
     script = user_soup.find('script', id='json-extras')
     extras_data = json.loads(script.contents[0].strip())
     return extras_data
+
+
+def get_beatmap_data(set_id, map_id, mode='osu'):
+    set_page_html = requests.get(f'https://osu.ppy.sh/beatmapsets/{set_id}#{mode}/{map_id}').text
+    set_page_soup = BeautifulSoup(set_page_html, 'lxml')
+    set_data = json.loads(set_page_soup.find_all('script', id="json-beatmapset")[0].contents[0].strip())
+    map_data = [x for x in set_data['beatmaps'] if x['id'] == map_id][0]
+
+    return map_data
 
 
 def convert_time(seconds):

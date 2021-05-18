@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 from scraping import *
+from emoji import *
 from datetime import date
 
 import os
@@ -16,15 +17,16 @@ client = commands.Bot(command_prefix=['>'], intents=intents)
 
 @client.command()
 async def ping(ctx):
-    await ctx.reply('pong!')
+    for emoji in client.emojis:
+        print(emoji)
+    await ctx.reply('pong <:PokeSlow:788414310762283050>')
 
 
 @client.command(aliases=['i', 'I'])
-async def info(ctx, username: str, *args: str):
-
-    if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:
-        mode = 'fruits' if args[0] == 'catch' else args[0]
-        arg = 'catch' if args[0] == 'fruits' else args[0]
+async def info(ctx, username: str, mode: str = None):
+    if mode and mode.lower() in ['taiko', 'fruits', 'mania', 'catch']:
+        mode = 'fruits' if mode == 'catch' else mode
+        arg = 'catch' if mode == 'fruits' else mode
     else:
         mode = 'osu'
         arg = False
@@ -53,7 +55,7 @@ async def info(ctx, username: str, *args: str):
 
     # START EMBED
     reply_embed = discord.Embed(
-        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile",
+        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile {mode_emoji[mode]}",
         colour=discord.Colour.blue()
     )
 
@@ -66,7 +68,7 @@ async def info(ctx, username: str, *args: str):
     )
     reply_embed.add_field(
         name='Total Play',
-        value=convert_time(user_data['statistics']['play_time'])[:-3]
+        value=convert_time(user_data['statistics']['play_time'])[:-3] if user_data['statistics']['play_time'] else "None"
     )
     reply_embed.add_field(
         name='Monthly Plays',
@@ -82,7 +84,7 @@ async def info(ctx, username: str, *args: str):
         mods_string = f' +{", ".join(top_play["mods"])}'
 
         reply_embed.add_field(
-            name=f'Top Play ({top_play["rank"]}{" FC" if top_play["perfect"] else ""}{mods_string if top_play["mods"] else ""})',
+            name=f'Top Play [ {rank_emoji[top_play["rank"]]}{" FC" if top_play["perfect"] else ""}{mods_string if top_play["mods"] else ""} for {top_play["pp"]} pp ]',
             value=f"- **Name:** {beatmapset['title']} [{top_play['beatmap']['version']}]\n"
                   f"- **Artist:** {beatmapset['artist']}\n"
                   f"- **Mapper:** {beatmapset['creator']}\n",
@@ -109,7 +111,7 @@ async def info(ctx, username: str, *args: str):
         )
     except:
         reply_embed.add_field(
-            name='Top Play',
+            name='Most Played Beatmap',
             value="No plays",
 
             inline=False
@@ -126,7 +128,6 @@ async def info(ctx, username: str, *args: str):
 
 @client.command(aliases=['r', 'R'])
 async def recent(ctx, username: str, *args: str):
-
     if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:
         mode = 'fruits' if args[0] == 'catch' else args[0]
         arg = 'catch' if args[0] == 'fruits' else args[0]
@@ -150,20 +151,23 @@ async def recent(ctx, username: str, *args: str):
     for mod in recent_play_data['mods']:
         mods_string += f"{mod} "
     recent_embed = discord.Embed(
-        description=f'Modifiers: {mods_string}' if recent_play_data['mods'] else None,
+        description=f'Modifiers: {mods_string}' if recent_play_data['mods'] else '',
         colour=discord.Colour.blue()
     )
     recent_embed.set_author(
         name=f"{beatmapset['title']} [{recent_play_data['beatmap']['version']}] {recent_play_data['beatmap']['difficulty_rating']}★",
-        icon_url="https://a.ppy.sh/" if user_data['avatar_url'] == '/images/layout/avatar-guest.png' else user_data['avatar_url'],
-        url=f"https://osu.ppy.sh/scores/osu/{recent_play_data['best_id']}" if recent_play_data['best_id'] else recent_play_data['beatmap']['url']
+        icon_url="https://a.ppy.sh/" if user_data['avatar_url'] == '/images/layout/avatar-guest.png' else user_data[
+            'avatar_url'],
+        url=f"https://osu.ppy.sh/scores/osu/{recent_play_data['best_id']}" if recent_play_data['best_id'] else
+        recent_play_data['beatmap']['url']
     )
     recent_embed.set_thumbnail(
         url=recent_play_data['beatmapset']['covers']['list']
     )
     stats = recent_play_data['statistics']
     recent_embed.add_field(
-        name=f'Rank: {recent_play_data["rank"]} FC' if recent_play_data['perfect'] else f'Rank: {recent_play_data["rank"]}',
+        name=f'Rank: {rank_emoji[recent_play_data["rank"]]} FC' if recent_play_data[
+            'perfect'] else f'Rank: {rank_emoji[recent_play_data["rank"]]}',
         value=f"- **Accuracy:** {round(recent_play_data['accuracy'] * 100, 2)}% "
               f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
               f"- **Score:** {recent_play_data['score']}\n"
@@ -171,6 +175,10 @@ async def recent(ctx, username: str, *args: str):
               f"- **pp:** {recent_play_data['pp'] if recent_play_data['pp'] else 'N/A'}",
 
         inline=False
+    )
+    recent_embed.set_footer(
+        text=f"osu!{mode if arg else ''}",
+        icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
 
     await ctx.reply(embed=recent_embed)

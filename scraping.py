@@ -49,7 +49,7 @@ def get_beatmap_data(set_id, map_id, mode='osu'):
     set_page_html = requests.get(f'https://osu.ppy.sh/beatmapsets/{set_id}#{mode}/{map_id}').text
     set_page_soup = BeautifulSoup(set_page_html, 'lxml')
     set_data = json.loads(set_page_soup.find_all('script', id="json-beatmapset")[0].contents[0].strip())
-    map_data = [x for x in set_data['beatmaps'] if x['id'] == map_id][0]
+    map_data, = [x for x in set_data['beatmaps'] if x['id'] == map_id]
 
     return map_data
 

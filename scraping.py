@@ -4,7 +4,7 @@ import json
 
 
 def main():
-    username = "skip_2mylu"  # input("Enter your osu! username: ").strip().lower()
+    username = "yenator07"  # input("Enter your osu! username: ").strip().lower()
     html_text = requests.get(f'https://osu.ppy.sh/users/{username}').text
 
     soup = BeautifulSoup(html_text, 'lxml')

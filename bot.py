@@ -185,6 +185,16 @@ async def recent(ctx, username: str, *args: str):
     await ctx.reply(embed=recent_embed)
 
 
+@client.command()
+async def all(ctx, username, mode="osu"):
+    user_data, extra_data = get_data(username, mode)
+
+    output_string = ""
+    for x in extra_data['scoresBest']:
+        output_string += f"{x['rank']}\n"
+    await ctx.reply(output_string)
+
+
 @client.event
 async def on_ready():
     print('osu! Rankings is online!')

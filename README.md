@@ -1,7 +1,7 @@
 # OsuBot
 A basic Discord bot for displaying recent and overall osu! scores. As of 17 April 2023, this bot is no longer working due to an update in osu!'s API. But don't fret, a fix is on the way!
 
-Add this bot to your Discord server: https://discord.com/api/oauth2/authorize?client_id=843169608852570184&permissions=534723816512&scope=bot
+Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2/authorize?client_id=843169608852570184&permissions=534723816512&scope=bot)
 
 Using ```>i [username]``` will return and display the cumulative stats of the specified user:
 

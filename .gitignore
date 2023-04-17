@@ -1,3 +1,9 @@
+# Files for deployment on DigitalOcean
+Procfile
+requirements.txt
+runtime.txt
+
+# Local file for environment variables
 environment.py
 
 # Created by https://www.toptal.com/developers/gitignore/api/pycharm

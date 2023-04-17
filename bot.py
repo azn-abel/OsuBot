@@ -3,6 +3,8 @@ from discord.ext import commands
 
 from scraping import *
 from emoji import *
+import api
+from api import refresh_token
 from datetime import date
 
 import os
@@ -11,14 +13,16 @@ if os.getenv('PYCHARM_HOSTED'):
     from environment import *
 
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True)
+intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True, message_content=True)
 client = commands.Bot(command_prefix=['>'], intents=intents)
 
 
 @client.command()
 async def ping(ctx):
-    for emoji in client.emojis:
-        print(emoji)
+    print(api.get_user("Vaxei"))
+    print(api.get_recents("Vaxei"))
+    # for emoji in client.emojis:
+    #     print(emoji)
     await ctx.reply('pong <:PokeSlow:788414310762283050>')
 
 
@@ -136,18 +140,19 @@ async def recent(ctx, username: str, *args: str):
         arg = False
 
     try:
-        user_data, extra_data = get_data(username, mode)
+        user_data = api.get_user(username, mode)
     except:
         await ctx.reply('Invalid username.')
         return
 
     try:
-        recent_play_data = extra_data['scoresRecent'][0]
+        recent_play_data = api.get_recents(username, mode)[0]
         beatmapset = recent_play_data['beatmapset']
     except:
         await ctx.reply("No recent plays.")
         return
-    beatmap_data = get_beatmap_data(recent_play_data['beatmap']['beatmapset_id'], recent_play_data['beatmap']['id'], mode)
+
+    beatmap_data = api.get_beatmap(recent_play_data['beatmap']['id'])
     mods_string = ''
     for mod in recent_play_data['mods']:
         mods_string += f"{mod} "
@@ -198,4 +203,5 @@ async def all(ctx, username, mode="osu"):
 @client.event
 async def on_ready():
     print('osu! Rankings is online!')
+    refresh_token.start()
     await client.change_presence(activity=discord.Game(name="osu!"))

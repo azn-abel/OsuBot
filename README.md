@@ -1,5 +1,5 @@
 # OsuBot
-A basic Discord bot for displaying recent and overall osu! scores. The aim of this bot is to provide a way for casual osu! players to share their accomplishments with each other. Commands and other features will be added upon request, and as I see fit. Basic documentation for this bot can be found below, and will be added to the [wiki page](https://github.com/azn-abel/OsuBot/wiki) once more is ready. Hope you enjoy!
+A basic Discord bot for displaying recent and overall osu! scores. The aim of this bot is to provide a way for casual osu! players to share their accomplishments with each other. Commands and other features will be added upon request, and as I see fit. Basic documentation for this bot can be found below, and detailed documentation will be added to the [wiki page](https://github.com/azn-abel/OsuBot/wiki) once it is ready. Hope you enjoy!
 
 As of 17 April 2023, this bot is no longer working due to an update in osu!'s API. But don't fret, a fix is on the way!
 

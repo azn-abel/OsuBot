@@ -30,12 +30,12 @@ def get_user(username, mode="osu"):
     return r.json()
 
 
-def get_recents(username, mode="osu"):
+def get_scores(username, mode="osu", score_type="recent"):
     user_id = get_user(username, mode)['id']
     headers = {"Accept": "application/json",
                "Content-Type": "application/x-www-form-urlencoded",
                "Authorization": f"Bearer {token}"}
-    r = requests.get(f"https://osu.ppy.sh/api/v2/users/{user_id}/scores/recent?mode={mode}", headers=headers)
+    r = requests.get(f"https://osu.ppy.sh/api/v2/users/{user_id}/scores/{score_type}?mode={mode}", headers=headers)
     return r.json()
 
 

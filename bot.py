@@ -1,11 +1,12 @@
 import discord
 from discord.ext import commands
+from pytz import UTC
 
 from scraping import *
 from emoji import *
 import api
 from api import refresh_token
-from datetime import date
+from datetime import date, datetime
 
 import os
 
@@ -13,14 +14,15 @@ if os.getenv('PYCHARM_HOSTED'):
     from environment import *
 
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True, message_content=True)
+intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True,
+                          message_content=True)
 client = commands.Bot(command_prefix=['>'], intents=intents)
 
 
 @client.command()
 async def ping(ctx):
     print(api.get_user("Vaxei"))
-    print(api.get_recents("Vaxei"))
+    print(api.get_scores("Vaxei"))
     # for emoji in client.emojis:
     #     print(emoji)
     await ctx.reply('pong <:PokeSlow:788414310762283050>')
@@ -72,7 +74,8 @@ async def info(ctx, username: str, mode: str = None):
     )
     reply_embed.add_field(
         name='Total Play',
-        value=convert_time(user_data['statistics']['play_time'])[:-3] if user_data['statistics']['play_time'] else "None"
+        value=convert_time(user_data['statistics']['play_time'])[:-3] if user_data['statistics'][
+            'play_time'] else "None"
     )
     reply_embed.add_field(
         name='Monthly Plays',
@@ -146,7 +149,7 @@ async def recent(ctx, username: str, *args: str):
         return
 
     try:
-        recent_play_data = api.get_recents(username, mode)[0]
+        recent_play_data = api.get_scores(username, mode)[0]
         beatmapset = recent_play_data['beatmapset']
     except:
         await ctx.reply("No recent plays.")
@@ -182,8 +185,13 @@ async def recent(ctx, username: str, *args: str):
 
         inline=False
     )
+
+    date_string = recent_play_data['created_at']
+    datetime_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
+    formatted_date = datetime_obj.strftime('%d %B %Y %H:%M UTC')
+
     recent_embed.set_footer(
-        text=f"osu!{mode if arg else ''}",
+        text=f"Recent play by {username.lower()} on osu!{mode if arg else ''} - {formatted_date}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
 
@@ -198,6 +206,17 @@ async def all(ctx, username, mode="osu"):
     for x in extra_data['scoresBest']:
         output_string += f"{x['rank']}\n"
     await ctx.reply(output_string)
+
+
+@client.command()
+async def time(ctx):
+    time_string = datetime.now(UTC).strftime('%d %B %Y %H:%M UTC')
+    embed = discord.Embed(
+        title="Current Time (UTC)",
+        description=time_string,
+        colour=discord.Colour.blue()
+    )
+    await ctx.reply(embed=embed)
 
 
 @client.event

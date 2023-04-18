@@ -5,6 +5,7 @@ As of 17 April 2023, this bot is no longer working due to an update in osu!'s AP
 
 Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2/authorize?client_id=843169608852570184&permissions=534723816512&scope=bot)
 
+## Basic Commands
 Using ```>i [username]``` will return and display the cumulative stats of the specified user:
 
 <img src="https://user-images.githubusercontent.com/66392457/230696787-4f4647b8-c277-47da-8b04-948a966e1a27.png" width=500 />

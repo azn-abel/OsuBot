@@ -18,7 +18,8 @@ This is useful for sharing accomplishments to members of a Discord server as the
 
 Adding a ```-d``` clause to the above will provide a more detailed response that covers the users top 5 most recent scores or highest pp plays.
 
-<img src="https://user-images.githubusercontent.com/66392457/232976723-90e021da-c664-44c0-9184-cbb37611c2f2.png" width=500 />
+<img src="https://user-images.githubusercontent.com/66392457/232979126-d4be9481-d743-4a7d-92db-f5b9b8f725df.png" width=500 />
+
 
 
 

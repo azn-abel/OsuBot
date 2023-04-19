@@ -4,7 +4,6 @@ from pytz import UTC
 
 from scraping import *
 from emoji import *
-import api
 from api import refresh_token
 from datetime import date, datetime
 from customembeds import single_score_embed, multiple_scores_embed
@@ -22,10 +21,6 @@ client = commands.Bot(command_prefix=['>'], intents=intents)
 
 @client.command()
 async def ping(ctx):
-    print(api.get_user("Vaxei"))
-    print(api.get_scores("Vaxei"))
-    # for emoji in client.emojis:
-    #     print(emoji)
     await ctx.reply('pong <:PokeSlow:788414310762283050>')
 
 

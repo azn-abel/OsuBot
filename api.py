@@ -1,7 +1,6 @@
 import asyncio
 
 import requests
-import time
 import os
 import environment
 from discord.ext import tasks
@@ -34,7 +33,6 @@ def get_user(username, mode="osu"):
 
 def get_scores(username, mode="osu", score_type="recent", num_scores=1):
     user = get_user(username, mode)
-    print(user)
     user_id = user['id']
     headers = {"Accept": "application/json",
                "Content-Type": "application/x-www-form-urlencoded",

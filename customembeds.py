@@ -1,7 +1,7 @@
 import asyncio
 
 import discord
-from datetime import date, datetime
+from datetime import datetime
 from emoji import *
 import api
 
@@ -88,8 +88,8 @@ async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
         beatmapset = score_data['beatmapset']
         mods_string = '+' + ''.join(score_data['mods']) if score_data['mods'] else ''
         score_string = (
-            f'- **Rank:** {rank_emoji[score_data["rank"]]} FC' if score_data[
-                'perfect'] else f'Rank: {rank_emoji[score_data["rank"]]} | '
+            (f'- **Rank:** {rank_emoji[score_data["rank"]]} FC | ' if score_data[
+                'perfect'] else f'- **Rank:** {rank_emoji[score_data["rank"]]} | ') +
             f"**Accuracy:** {round(score_data['accuracy'] * 100, 2)}% "
             f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
             f"- **Score:** {score_data['score']} | **Combo:** {score_data['max_combo']}/{beatmap_data['max_combo']}"

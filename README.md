@@ -8,7 +8,7 @@ Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2
 ## Basic Commands
 Using ```>i [username]``` will return and display the cumulative stats of the specified user:
 
-<img src="https://user-images.githubusercontent.com/66392457/230696787-4f4647b8-c277-47da-8b04-948a966e1a27.png" width=500 />
+<img src="https://user-images.githubusercontent.com/66392457/232990934-01296bfa-2b1e-4a90-90b4-2e999ca941e9.png" width=500 />
 
 Using ```>r [username]``` or ```>t [username]```displays the specified user's most recent play or highest pp play.
 This is useful for sharing accomplishments to members of a Discord server as they happen in real time.

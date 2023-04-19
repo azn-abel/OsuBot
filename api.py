@@ -2,7 +2,8 @@ import asyncio
 
 import requests
 import os
-import environment
+if os.getenv('PYCHARM_HOSTED'):
+    from environment import *
 from discord.ext import tasks
 
 API_ACCESS_TOKEN = ""

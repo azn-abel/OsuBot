@@ -17,7 +17,7 @@ async def info_embed(username, mode, arg):
 
     reply_embed = discord.Embed(
         title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile",
-        colour=discord.Colour.blue()
+        colour=0xff79b8
     )
 
     reply_embed.add_field(
@@ -62,7 +62,7 @@ async def single_score_embed(username, mode, arg, score_type):
         mods_string += f"{mod} "
     score_embed = discord.Embed(
         description=f'Modifiers: {mods_string}' if play_data['mods'] else '',
-        colour=discord.Colour.blue()
+        colour=0xff79b8
     )
     score_embed.set_author(
         name=f"{beatmapset['title']} [{play_data['beatmap']['version']}] {play_data['beatmap']['difficulty_rating']}★",
@@ -110,7 +110,7 @@ async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
     scores_embed = discord.Embed(
         title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s {score_type.capitalize()} Plays",
         url=f"https://osu.ppy.sh/users/{username}/{mode}",
-        colour=discord.Colour.blue()
+        colour=0xff79b8
     )
 
     scores_embed.set_thumbnail(

@@ -13,7 +13,7 @@ if os.getenv('PYCHARM_HOSTED'):
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True,
                           message_content=True)
-client = commands.Bot(command_prefix=['>'], intents=intents)
+client = commands.Bot(command_prefix=['osu!'], intents=intents)
 
 
 @client.command()

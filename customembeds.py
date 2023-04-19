@@ -9,17 +9,16 @@ import api
 async def info_embed(username, mode, arg):
     try:
         user_data = api.get_user(username, mode)
-    except:
+        statistics = user_data['statistics']
+        global_rank = statistics['global_rank']
+        country_rank = statistics['country_rank']
+    except KeyError:
         raise Exception('Invalid username.')
 
     reply_embed = discord.Embed(
         title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile",
         colour=discord.Colour.blue()
     )
-
-    statistics = user_data['statistics']
-    global_rank = statistics['global_rank']
-    country_rank = statistics['country_rank']
 
     reply_embed.add_field(
         name="",
@@ -46,15 +45,15 @@ async def info_embed(username, mode, arg):
 
 
 async def single_score_embed(username, mode, arg, score_type):
-    try:
-        user_data = api.get_user(username, mode)
-    except:
+
+    user_data = api.get_user(username, mode)
+    if 'error' in user_data.keys():
         raise Exception('Invalid username.')
 
     try:
         play_data = api.get_scores(username, mode, score_type)[0]
         beatmapset = play_data['beatmapset']
-    except:
+    except Exception:
         raise Exception(f'No {score_type} plays.')
 
     beatmap_data = api.get_beatmap(play_data['beatmap']['id'])
@@ -101,15 +100,12 @@ async def single_score_embed(username, mode, arg, score_type):
 
 
 async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
-    try:
-        user_data = api.get_user(username, mode)
-    except:
+
+    user_data = api.get_user(username, mode)
+    if 'error' in user_data.keys():
         raise Exception('Invalid username.')
 
-    try:
-        scores_data = api.get_scores(username, mode, score_type, num_scores)
-    except:
-        raise Exception(f'No {score_type} plays.')
+    scores_data = api.get_scores(username, mode, score_type, num_scores)
 
     scores_embed = discord.Embed(
         title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s {score_type.capitalize()} Plays",
@@ -121,21 +117,27 @@ async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
         url=user_data['avatar_url']
     )
 
+    if len(scores_data) == 0:
+        scores_embed.description = f"No {score_type} plays."
+
     for i, score_data in enumerate(scores_data):
         beatmap_data = api.get_beatmap(score_data['beatmap']['id'])
         stats = score_data['statistics']
         beatmapset = score_data['beatmapset']
         mods_string = '+' + ''.join(score_data['mods']) if score_data['mods'] else ''
+
         score_string = (
-            (f'- **Rank:** {rank_emoji[score_data["rank"]]} FC | ' if score_data[
-                'perfect'] else f'- **Rank:** {rank_emoji[score_data["rank"]]} | ') +
+            (f'• **Rank:** {rank_emoji[score_data["rank"]]} FC | ' if score_data[
+                'perfect'] else f'• **Rank:** {rank_emoji[score_data["rank"]]} | ') +
             f"**Accuracy:** {round(score_data['accuracy'] * 100, 2)}% "
             f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
-            f"- **Score:** {score_data['score']} | **Combo:** {score_data['max_combo']}/{beatmap_data['max_combo']}"
+            f"• **Score:** {score_data['score']} | **Combo:** {score_data['max_combo']}/{beatmap_data['max_combo']}"
         )
+        score_title = f"**{i + 1}. {beatmapset['title']} [{score_data['beatmap']['version']}] {score_data['beatmap']['difficulty_rating']}★ {mods_string} | {score_data['pp'] if score_data['pp'] else 'N/A'} pp**"
+
         scores_embed.add_field(
-            name=f"**{i + 1}. {beatmapset['title']} [{score_data['beatmap']['version']}] {score_data['beatmap']['difficulty_rating']}★ {mods_string} | {score_data['pp']}pp**",
-            value=score_string,
+            name="",
+            value=f"[{score_title}]({score_data['beatmap']['url']}){score_string}",
             inline=False
         )
 

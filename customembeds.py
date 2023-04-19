@@ -25,7 +25,7 @@ async def info_embed(username, mode, arg):
         value=(
             f"- **Global Rank:** " + (f" #{global_rank:,}" if global_rank else "Unranked") + " | "
             f"**Country Rank:** " + (f" #{country_rank:,}" if country_rank else "Unranked") + "\n"
-            f"- **PP:** {statistics['pp']} | **Accuracy:** {statistics['hit_accuracy']}"
+            f"- **PP:** {statistics['pp']} | **Accuracy:** {round(statistics['hit_accuracy'], 2)}%"
         )
     )
 

@@ -7,6 +7,7 @@ from emoji import *
 import api
 from api import refresh_token
 from datetime import date, datetime
+from customembeds import single_score_embed, multiple_scores_embed
 
 import os
 
@@ -142,60 +143,41 @@ async def recent(ctx, username: str, *args: str):
         mode = 'osu'
         arg = False
 
-    try:
-        user_data = api.get_user(username, mode)
-    except:
-        await ctx.reply('Invalid username.')
-        return
+    if "-d" in args or "-D" in args:
+        try:
+            recent_embed = await multiple_scores_embed(username, mode, arg, 'recent', 5)
+            await ctx.reply(embed=recent_embed)
+        except Exception as e:
+            await ctx.reply(e)
+    else:
+        try:
+            recent_embed = await single_score_embed(username, mode, arg, 'recent')
+            await ctx.reply(embed=recent_embed)
+        except Exception as e:
+            await ctx.reply(e)
 
-    try:
-        recent_play_data = api.get_scores(username, mode)[0]
-        beatmapset = recent_play_data['beatmapset']
-    except:
-        await ctx.reply("No recent plays.")
-        return
 
-    beatmap_data = api.get_beatmap(recent_play_data['beatmap']['id'])
-    mods_string = ''
-    for mod in recent_play_data['mods']:
-        mods_string += f"{mod} "
-    recent_embed = discord.Embed(
-        description=f'Modifiers: {mods_string}' if recent_play_data['mods'] else '',
-        colour=discord.Colour.blue()
-    )
-    recent_embed.set_author(
-        name=f"{beatmapset['title']} [{recent_play_data['beatmap']['version']}] {recent_play_data['beatmap']['difficulty_rating']}★",
-        icon_url="https://a.ppy.sh/" if user_data['avatar_url'] == '/images/layout/avatar-guest.png' else user_data[
-            'avatar_url'],
-        url=f"https://osu.ppy.sh/scores/osu/{recent_play_data['best_id']}" if recent_play_data['best_id'] else
-        recent_play_data['beatmap']['url']
-    )
-    recent_embed.set_thumbnail(
-        url=recent_play_data['beatmapset']['covers']['list']
-    )
-    stats = recent_play_data['statistics']
-    recent_embed.add_field(
-        name=f'Rank: {rank_emoji[recent_play_data["rank"]]} FC' if recent_play_data[
-            'perfect'] else f'Rank: {rank_emoji[recent_play_data["rank"]]}',
-        value=f"- **Accuracy:** {round(recent_play_data['accuracy'] * 100, 2)}% "
-              f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
-              f"- **Score:** {recent_play_data['score']}\n"
-              f"- **Combo:** {recent_play_data['max_combo']}/{beatmap_data['max_combo']}\n"
-              f"- **pp:** {recent_play_data['pp'] if recent_play_data['pp'] else 'N/A'}",
+@client.command(aliases=['t', 'T'])
+async def top(ctx, username: str, *args: str):
+    if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:
+        mode = 'fruits' if args[0] == 'catch' else args[0]
+        arg = 'catch' if args[0] == 'fruits' else args[0]
+    else:
+        mode = 'osu'
+        arg = False
 
-        inline=False
-    )
-
-    date_string = recent_play_data['created_at']
-    datetime_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
-    formatted_date = datetime_obj.strftime('%d %B %Y %H:%M UTC')
-
-    recent_embed.set_footer(
-        text=f"Recent play by {username.lower()} on osu!{mode if arg else ''} - {formatted_date}",
-        icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
-    )
-
-    await ctx.reply(embed=recent_embed)
+    if "-d" in args or "-D" in args:
+        try:
+            top_embed = await multiple_scores_embed(username, mode, arg, 'best', 5)
+            await ctx.reply(embed=top_embed)
+        except Exception as e:
+            await ctx.reply(e)
+    else:
+        try:
+            top_embed = await single_score_embed(username, mode, arg, 'best')
+            await ctx.reply(embed=top_embed)
+        except Exception as e:
+            await ctx.reply(e)
 
 
 @client.command()

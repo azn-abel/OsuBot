@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 import time
 import os
@@ -30,12 +32,14 @@ def get_user(username, mode="osu"):
     return r.json()
 
 
-def get_scores(username, mode="osu", score_type="recent"):
-    user_id = get_user(username, mode)['id']
+def get_scores(username, mode="osu", score_type="recent", num_scores=1):
+    user = get_user(username, mode)
+    print(user)
+    user_id = user['id']
     headers = {"Accept": "application/json",
                "Content-Type": "application/x-www-form-urlencoded",
                "Authorization": f"Bearer {API_ACCESS_TOKEN}"}
-    r = requests.get(f"https://osu.ppy.sh/api/v2/users/{user_id}/scores/{score_type}?mode={mode}", headers=headers)
+    r = requests.get(f"https://osu.ppy.sh/api/v2/users/{user_id}/scores/{score_type}?mode={mode}&limit={num_scores}", headers=headers)
     return r.json()
 
 
@@ -47,4 +51,5 @@ def get_beatmap(beatmap_id):
     return r.json()
 
 
+asyncio.run(refresh_token())
 

@@ -127,17 +127,17 @@ async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
         mods_string = '+' + ''.join(score_data['mods']) if score_data['mods'] else ''
 
         score_string = (
-            (f'• **Rank:** {rank_emoji[score_data["rank"]]} FC | ' if score_data[
-                'perfect'] else f'• **Rank:** {rank_emoji[score_data["rank"]]} | ') +
+            (f'**Rank:** {rank_emoji[score_data["rank"]]} FC | ' if score_data[
+                'perfect'] else f'**Rank:** {rank_emoji[score_data["rank"]]} | ') +
             f"**Accuracy:** {round(score_data['accuracy'] * 100, 2)}% "
             f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
-            f"• **Score:** {score_data['score']} | **Combo:** {score_data['max_combo']}/{beatmap_data['max_combo']}"
+            f"**Score:** {score_data['score']} | **Combo:** {score_data['max_combo']}/{beatmap_data['max_combo']}"
         )
         score_title = f"**{i + 1}. {beatmapset['title']} [{score_data['beatmap']['version']}] {score_data['beatmap']['difficulty_rating']}★ {mods_string} | {score_data['pp'] if score_data['pp'] else 'N/A'} pp**"
 
         scores_embed.add_field(
             name="",
-            value=f"[{score_title}]({score_data['beatmap']['url']}){score_string}",
+            value=f"[{score_title}]({score_data['beatmap']['url']}) {score_string}",
             inline=False
         )
 

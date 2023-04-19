@@ -6,6 +6,45 @@ from emoji import *
 import api
 
 
+async def info_embed(username, mode, arg):
+    try:
+        user_data = api.get_user(username, mode)
+    except:
+        raise Exception('Invalid username.')
+
+    reply_embed = discord.Embed(
+        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile",
+        colour=discord.Colour.blue()
+    )
+
+    statistics = user_data['statistics']
+    global_rank = statistics['global_rank']
+    country_rank = statistics['country_rank']
+
+    reply_embed.add_field(
+        name="",
+        value=(
+            f"- **Global Rank:** " + (f" #{global_rank:,}" if global_rank else "Unranked") + " | "
+            f"**Country Rank:** " + (f" #{country_rank:,}" if country_rank else "Unranked") + "\n"
+            f"- **PP:** {statistics['pp']} | **Accuracy:** {statistics['hit_accuracy']}"
+        )
+    )
+
+    if user_data['avatar_url'] == '/images/layout/avatar-guest.png':
+        reply_embed.set_thumbnail(url="https://a.ppy.sh/")
+    else:
+        reply_embed.set_thumbnail(url=user_data['avatar_url'])
+
+    date_string = user_data['join_date']
+    datetime_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
+    formatted_date = datetime_obj.strftime('%d %B %Y')
+    reply_embed.set_footer(
+        text=f"{user_data['username']} joined osu!{mode if arg else ''} on {formatted_date}",
+        icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
+    )
+    return reply_embed
+
+
 async def single_score_embed(username, mode, arg, score_type):
     try:
         user_data = api.get_user(username, mode)

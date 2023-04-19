@@ -4,6 +4,8 @@ A basic Discord bot for displaying recent and overall osu! scores. The aim of th
 Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2/authorize?client_id=843169608852570184&permissions=534723816512&scope=bot)
 
 ## Basic Commands
+- [>info](#info)
+- [>recent and >top](#recent-and-top)
 
 ### >info
 Using ```>i [username] [mode]``` will return and display the cumulative stats of the specified user, and in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.

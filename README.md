@@ -4,11 +4,11 @@ A basic Discord bot for displaying recent and overall osu! scores. The aim of th
 Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2/authorize?client_id=843169608852570184&permissions=534723816512&scope=bot)
 
 ## Basic Commands
-Using ```>i [username]``` will return and display the cumulative stats of the specified user:
+Using ```>i [username] [mode]``` will return and display the cumulative stats of the specified user, and in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.
 
 <img src="https://user-images.githubusercontent.com/66392457/232990934-01296bfa-2b1e-4a90-90b4-2e999ca941e9.png" width=500 />
 
-Using ```>r [username]``` or ```>t [username]```displays the specified user's most recent play or highest pp play.
+Using ```>r [username] [mode]``` or ```>t [username] [mode]```displays the specified user's most recent play or highest pp play.
 This is useful for sharing accomplishments to members of a Discord server as they happen in real time.
 
 <img src="https://user-images.githubusercontent.com/66392457/230696826-54b57f67-0500-4965-be82-7f59e85c04e9.png" width=500 />

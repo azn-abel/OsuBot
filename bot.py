@@ -13,7 +13,7 @@ import os
 if os.getenv('PYCHARM_HOSTED'):
     from environment import *
 
-TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True,
                           message_content=True)
 client = commands.Bot(command_prefix=['>'], intents=intents)

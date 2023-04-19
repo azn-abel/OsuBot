@@ -1,3 +1,3 @@
 from bot import *
 
-client.run(TOKEN)
+client.run(DISCORD_BOT_TOKEN)

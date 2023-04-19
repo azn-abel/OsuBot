@@ -10,10 +10,28 @@ import os
 if os.getenv('PYCHARM_HOSTED'):
     from environment import *
 
+import requests
+import math
+
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True,
                           message_content=True)
-client = commands.Bot(command_prefix=['osu!'], intents=intents)
+
+headers = {
+    "Authorization": f"Bot {DISCORD_BOT_TOKEN}"
+}
+
+response = requests.get("https://discord.com/api/users/@me/guilds", headers=headers)
+
+if response.status_code == 200:
+    guilds = response.json()
+    num_guilds = len(guilds)
+    print(f"The bot is in {num_guilds} guilds.")
+else:
+    raise Exception(f"Failed to fetch guilds. Status code: {response.status_code}")
+
+total_shards = math.ceil(num_guilds / 1000)
+client = commands.AutoShardedBot(command_prefix=['osu!'], intents=intents, shard_count=total_shards)
 
 
 @client.command()

@@ -10,10 +10,12 @@ Using ```>i [username]``` will return and display the cumulative stats of the sp
 
 <img src="https://user-images.githubusercontent.com/66392457/230696787-4f4647b8-c277-47da-8b04-948a966e1a27.png" width=500 />
 
-Using ```>r [username]``` displays the specified user's most recent play.
-This is useful for sharing recent accomplishments to members of a Discord server.
+Using ```>r [username]``` or ```>t [username]```displays the specified user's most recent play or top play.
+This is useful for sharing accomplishments to members of a Discord server as they happen in real time.
 
 <img src="https://user-images.githubusercontent.com/66392457/230696826-54b57f67-0500-4965-be82-7f59e85c04e9.png" width=500 />
+<img src="https://user-images.githubusercontent.com/66392457/232976067-f5e009b5-361b-4533-9de4-53bc3a7885ef.png" width=500 />
+
 
 
 

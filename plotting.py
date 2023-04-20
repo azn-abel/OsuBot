@@ -1,6 +1,7 @@
 import api
 import numpy as np
 import matplotlib.pyplot as plt
+import io
 
 
 def scatter_scores(scores: list):
@@ -17,11 +18,17 @@ def scatter_scores(scores: list):
     plt.xlabel("Play Ranking out of 100")
     plt.ylabel("Performance Points (PP)")
 
-    # Show plot
-    plt.savefig("plots/temp.png")
+    # create an in-memory binary stream
+    buffer = io.BytesIO()
+
+    # save the figure to the binary stream as bytes
+    plt.savefig(buffer, format='png')
+    # plt.savefig("plots/temp.png")
 
     # Clear once done
     plt.clf()
+
+    return buffer.getvalue()
 
 
 def histogram_scores(scores: list):
@@ -47,11 +54,21 @@ def histogram_scores(scores: list):
     # Adjust margins
     plt.subplots_adjust(top=0.9, bottom=0.15)
 
+    # create an in-memory binary stream
+    buffer = io.BytesIO()
+
+    # save the figure to the binary stream as bytes
+    plt.savefig(buffer, format='png')
     # Save the plot
-    plt.savefig("./plots/temp.png")
+    # plt.savefig("./plots/temp.png")
 
     # Clear once done
     plt.clf()
+
+    image_bytes = buffer.getvalue()
+    buffer.close()
+
+    return image_bytes
 
 
 if __name__ == "__main__":

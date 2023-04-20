@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from pytz import UTC
+import io
 
 import api
 from api import refresh_token
@@ -94,8 +95,11 @@ async def plot(ctx, username, mode: str = "osu"):
         return
 
     scores = api.get_scores(username, mode, "best", 100)
-    plotting.histogram_scores(scores)
-    temp_file = discord.File(f"plots/temp.png", filename="plot.png")
+    image_bytes = plotting.histogram_scores(scores)
+    buffer = io.BytesIO(image_bytes)
+    # temp_file = discord.File(f"plots/temp.png", filename="plot.png")
+    temp_file = discord.File(buffer, filename='plot.png')
+    buffer.close()
     embed = discord.Embed(
         title=f"{user['username']}'s Top {len(scores)} Plays in osu!{mode if mode != 'osu' else ''}",
         colour=0xff79b8

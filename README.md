@@ -6,6 +6,7 @@ Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2
 ## Basic Commands
 - [osu!info](#osuinfo)
 - [osu!recent and osu!top](#osurecent-and-osutop)
+- [osu!plot](#osuplot)
 
 ### osu!info
 Using ```osu!info [username] [mode]``` will return and display the cumulative stats of the specified user, and in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.
@@ -24,6 +25,11 @@ Using ```osu!top [username] [mode]``` similarly displays a specified user's top 
 Adding a ```-d``` clause to the above will provide a more detailed response that covers the users top 5 most recent scores or highest pp plays.
 
 <img src="https://user-images.githubusercontent.com/66392457/233444835-5c692c86-31cd-46ba-8256-b51bff4cb0b8.png" width=500 />
+
+### osu!plot
+Using ```osu!plot [username] [mode]``` will display basic statistics on the user's top 100 plays, as well as a histogram showing their distribution.
+
+<img src="https://user-images.githubusercontent.com/66392457/233445745-372ddbba-10e6-40be-a184-0bc9b08a51a8.png" width=500 />
 
 
 

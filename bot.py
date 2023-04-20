@@ -2,7 +2,9 @@ import discord
 from discord.ext import commands
 from pytz import UTC
 
+import api
 from api import refresh_token
+import plotting
 from customembeds import *
 
 import os
@@ -76,6 +78,30 @@ async def recent(ctx, username: str, *args: str):
             await ctx.reply(embed=recent_embed)
         except Exception as e:
             await ctx.reply(e)
+
+
+@client.command()
+async def plot(ctx, username, mode: str = "osu"):
+    if mode not in ['taiko', 'fruits', 'mania', 'osu']:
+        if mode == 'catch':
+            mode = 'fruits'
+        else:
+            mode = 'osu'
+
+    user = api.get_user(username, mode)
+    if 'error' in user.keys():
+        await ctx.reply("Invalid username.")
+        return
+
+    scores = api.get_scores(username, mode, "best", 100)
+    plotting.histogram_scores(scores)
+    temp_file = discord.File(f"plots/temp.png", filename="plot.png")
+    embed = discord.Embed(
+        title=f"{user['username']}'s Top {len(scores)} Plays in osu!{mode if mode != 'osu' else ''}",
+        colour=0xff79b8
+    )
+    embed.set_image(url="attachment://plot.png")
+    await ctx.reply(file=temp_file, embed=embed)
 
 
 @client.command(aliases=['t', 'T'])

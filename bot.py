@@ -108,6 +108,8 @@ async def plot(ctx, username, mode: str = "osu"):
         colour=0xff79b8
     )
 
+    embed.set_thumbnail(url=user['avatar_url'])
+
     # Add fields for statistics
     pp_values = np.array([score['pp'] for score in scores], dtype=np.float64)
     stats = {

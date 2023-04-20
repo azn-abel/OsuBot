@@ -7,7 +7,7 @@ Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2
 - [osu!info](#osuinfo)
 - [osu!recent and osu!top](#osurecent-and-osutop)
 
-### >info
+### osu!info
 Using ```osu!info [username] [mode]``` will return and display the cumulative stats of the specified user, and in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.
 
 <img src="https://user-images.githubusercontent.com/66392457/233444032-23e9937b-4d18-4fee-9836-4196f69c11d9.png" width=500 />

@@ -1,4 +1,5 @@
 discord.py
 requests
+numpy
 matplotlib
 pytz

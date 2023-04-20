@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from pytz import UTC
+import numpy as np
 import io
 
 import api
@@ -95,15 +96,35 @@ async def plot(ctx, username, mode: str = "osu"):
         return
 
     scores = api.get_scores(username, mode, "best", 100)
+
+    # Retrieve image from plotting module
     image_bytes = plotting.histogram_scores(scores)
     buffer = io.BytesIO(image_bytes)
-    # temp_file = discord.File(f"plots/temp.png", filename="plot.png")
     temp_file = discord.File(buffer, filename='plot.png')
     buffer.close()
+
     embed = discord.Embed(
-        title=f"{user['username']}'s Top {len(scores)} Plays in osu!{mode if mode != 'osu' else ''}",
+        title=f":flag_{user['country_code'].lower()}: {user['username']}'s Top {len(scores)} Plays in osu!{mode if mode != 'osu' else ''}",
         colour=0xff79b8
     )
+
+    # Add fields for statistics
+    pp_values = np.array([score['pp'] for score in scores], dtype=np.float64)
+    stats = {
+        'Ovr PP': user['statistics']['pp'],
+        'Max PP': np.max(pp_values),
+        'Min PP': np.min(pp_values),
+        'Med PP': np.median(pp_values),
+        'Mean PP': np.mean(pp_values),
+        'Std Dev': np.std(pp_values)
+    }
+    for key in stats.keys():
+        embed.add_field(
+            name=key,
+            value=round(stats[key], 3),
+            inline=True
+        )
+
     embed.set_image(url="attachment://plot.png")
     await ctx.reply(file=temp_file, embed=embed)
 

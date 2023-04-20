@@ -13,22 +13,21 @@ def scatter_scores(scores: list):
     # Create plot
     plt.scatter(x_values, y_values)
 
-    # Add labels
-    plt.title("PP for Top 100 Plays")
+    # Add labels. No title because the embed will handle it
     plt.xlabel("Play Ranking out of 100")
     plt.ylabel("Performance Points (PP)")
 
     # create an in-memory binary stream
     buffer = io.BytesIO()
 
-    # save the figure to the binary stream as bytes
+    # Save the figure to the binary stream as bytes and clear plt
     plt.savefig(buffer, format='png')
-    # plt.savefig("plots/temp.png")
-
-    # Clear once done
     plt.clf()
 
-    return buffer.getvalue()
+    # Close buffer and return bytes
+    image_bytes = buffer.getvalue()
+    buffer.close()
+    return image_bytes
 
 
 def histogram_scores(scores: list):
@@ -36,38 +35,31 @@ def histogram_scores(scores: list):
     plt.rcParams.update({'font.size': 16})
     scores_pp = [score['pp'] for score in scores]
 
-    print(min(scores_pp), max(scores_pp))
-
     # Set the bin edges manually to be intervals of 10
     bin_edges = np.arange(min(scores_pp) // 10 * 10, max(scores_pp) // 10 * 10 + 11, 10)
 
     # Create a histogram with 20 bins
     plt.hist(scores_pp, bins=bin_edges, color="#ff79b8", edgecolor='white')
 
-    # Add labels and title
+    # Add label. No title because the embed will handle it
     plt.xlabel('PP Value')
     plt.ylabel('Frequency')
 
+    # Set size and adjust margins
     fig = plt.gcf()
     fig.set_size_inches(10, 5)
-
-    # Adjust margins
     plt.subplots_adjust(top=0.9, bottom=0.15)
 
-    # create an in-memory binary stream
+    # Create an in-memory binary stream
     buffer = io.BytesIO()
 
-    # save the figure to the binary stream as bytes
+    # Save the figure to the binary stream as bytes, clear plt
     plt.savefig(buffer, format='png')
-    # Save the plot
-    # plt.savefig("./plots/temp.png")
-
-    # Clear once done
     plt.clf()
 
+    # Return image bytes in png form, close buffer
     image_bytes = buffer.getvalue()
     buffer.close()
-
     return image_bytes
 
 

@@ -48,13 +48,13 @@ def histogram_scores(scores: list):
     plt.subplots_adjust(top=0.9, bottom=0.15)
 
     # Save the plot
-    plt.savefig("plots/temp.png")
+    plt.savefig("./plots/temp.png")
 
     # Clear once done
     plt.clf()
 
 
 if __name__ == "__main__":
-    scores = api.get_scores("mrekk", "osu", "best", 100)
+    scores = api.get_scores("btmc", "osu", "best", 100)
     histogram_scores(scores)
     pass

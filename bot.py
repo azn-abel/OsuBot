@@ -3,6 +3,7 @@ from discord.ext import commands
 from pytz import UTC
 import numpy as np
 import io
+import logging
 
 import api
 from api import refresh_token
@@ -17,24 +18,33 @@ if os.getenv('PYCHARM_HOSTED'):
 import requests
 import math
 
+logger = logging.getLogger('discord')
+logger.propagate = False
+
+
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True,
                           message_content=True)
 
-headers = {
-    "Authorization": f"Bot {DISCORD_BOT_TOKEN}"
-}
 
-response = requests.get("https://discord.com/api/users/@me/guilds", headers=headers)
+def get_guilds():
+    headers = {
+        "Authorization": f"Bot {DISCORD_BOT_TOKEN}"
+    }
 
-if response.status_code == 200:
-    guilds = response.json()
-    num_guilds = len(guilds)
-    print(f"The bot is in {num_guilds} guilds.")
-else:
-    raise Exception(f"Failed to fetch guilds. Status code: {response.status_code}")
+    response = requests.get("https://discord.com/api/users/@me/guilds", headers=headers)
 
-total_shards = math.ceil(num_guilds / 1000)
+    if response.status_code == 200:
+        guilds = response.json()
+        return guilds
+    else:
+        logger.error(f"Failed to fetch guilds. Status code: {response.status_code}")
+        return []
+
+
+initial_num_guilds = len(get_guilds())
+
+total_shards = math.ceil(initial_num_guilds / 1000)
 client = commands.AutoShardedBot(command_prefix=['osu!'], intents=intents, shard_count=total_shards)
 
 
@@ -177,6 +187,17 @@ async def time(ctx):
 
 @client.event
 async def on_ready():
-    print('osu! Rankings is online!')
-    refresh_token.start()
+    logger.info(f'osu! Rankings is online in {initial_num_guilds} guilds.')
+    try:
+        refresh_token.start(logger=logger)
+        logger.info("Started refresh_token loop.")
+    except RuntimeError:
+        logger.info("refresh_token loop already in progress - no need to restart it.")
     await client.change_presence(activity=discord.Game(name="osu!"))
+
+
+@client.event
+async def on_guild_join(guild):
+    num_guilds = len(get_guilds())
+    logger.info(f'Joined guild "{guild.name}" ({guild.id})')
+    logger.info(f'osu! Ranking is online in {num_guilds} guilds.')

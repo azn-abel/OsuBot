@@ -10,7 +10,7 @@ API_ACCESS_TOKEN = ""
 
 
 @tasks.loop(seconds=86000)
-async def refresh_token():
+async def refresh_token(logger):
     global API_ACCESS_TOKEN
 
     headers = {"Accept": "application/json", "Content-Type": "application/x-www-form-urlencoded"}
@@ -22,6 +22,7 @@ async def refresh_token():
     r = requests.post("https://osu.ppy.sh/oauth/token", headers=headers, data=data)
     token_dict = r.json()
     API_ACCESS_TOKEN = token_dict['access_token']
+    logger.info('API access token refreshed.')
 
 
 def get_user(username, mode="osu"):
@@ -50,5 +51,5 @@ def get_beatmap(beatmap_id):
     return r.json()
 
 
-asyncio.run(refresh_token())
+# asyncio.run(refresh_token())
 

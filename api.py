@@ -51,5 +51,39 @@ def get_beatmap(beatmap_id):
     return r.json()
 
 
-# asyncio.run(refresh_token())
+def get_rankings(mode: str, pages: int):
+    headers = {"Accept": "application/json",
+               "Content-Type": "application/json",
+               "Authorization": f"Bearer {API_ACCESS_TOKEN}"}
+
+    rtn_rankings = []
+    for i in range(1, pages + 1):
+        response = requests.get(f"https://osu.ppy.sh/api/v2/rankings/{mode}/performance?cursor[page]={i}&filter=all", headers=headers).json()
+        rankings = response['ranking']
+        for ranking in rankings:
+            rtn_rankings.append(ranking)
+
+    return rtn_rankings
+
+
+asyncio.run(refresh_token())
+
+
+if __name__ == "__main__":
+    headers = {"Accept": "application/json", "Content-Type": "application/x-www-form-urlencoded"}
+    data = {"client_id": os.getenv("client_id"),
+            "client_secret": os.getenv("client_secret"),
+            "grant_type": "client_credentials",
+            "scope": "public"}
+
+    r = requests.post("https://osu.ppy.sh/oauth/token", headers=headers, data=data)
+    token_dict = r.json()
+    API_ACCESS_TOKEN = token_dict['access_token']
+    rankings = get_rankings('osu', 5)
+    penis = [ranking['user']['country_code'] for ranking in rankings]
+    penis.sort()
+    print(penis)
+    print(len(penis))
+    print(list(set(penis)))
+    print(len(list(set(penis))))
 

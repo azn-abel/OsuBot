@@ -2,4 +2,5 @@ discord.py
 requests
 numpy
 matplotlib
+logging
 pytz

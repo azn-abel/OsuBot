@@ -19,7 +19,7 @@ import requests
 import math
 
 logger = logging.getLogger('discord')
-logger.propagate = False
+shard_logger = logging.getLogger('discord.shard')
 
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')

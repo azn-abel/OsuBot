@@ -8,6 +8,7 @@ Quick note: for any username in any command, if the username contains spaces, "i
 - [osu!info](#osuinfo)
 - [osu!recent and osu!top](#osurecent-and-osutop)
 - [osu!plot](#osuplot)
+- [osu!bar](#osubar)
 
 ### osu!info
 Using ```osu!info [username] [mode]``` will return and display the cumulative stats of the specified user in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.

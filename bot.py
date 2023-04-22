@@ -108,13 +108,17 @@ async def plot(ctx, username, mode: str = "osu"):
     scores = api.get_scores(username, mode, "best", 100)
 
     # Retrieve image from plotting module
-    image_bytes = plotting.histogram_scores(scores)
+    try:
+        image_bytes = plotting.histogram_scores(scores)
+    except Exception as e:
+        await ctx.reply(e)
+        return
     buffer = io.BytesIO(image_bytes)
     temp_file = discord.File(buffer, filename='plot.png')
     buffer.close()
 
     embed = discord.Embed(
-        title=f":flag_{user['country_code'].lower()}: {user['username']}'s Top {len(scores)} Plays in osu!{mode if mode != 'osu' else ''}",
+        title=f":flag_{user['country_code'].lower()}: #{user['statistics']['global_rank']:,} {user['username']}'s Top {len(scores)} osu!{mode if mode != 'osu' else ''} Plays",
         colour=0xff79b8
     )
 

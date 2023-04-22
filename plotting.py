@@ -35,6 +35,9 @@ def histogram_scores(scores: list):
     plt.rcParams.update({'font.size': 16})
     scores_pp = [score['pp'] for score in scores]
 
+    if len(scores_pp) <= 0:
+        raise Exception("User has no plays for the specified mode.")
+
     # Set the bin edges manually to be intervals of 10
     bin_edges = np.arange(min(scores_pp) // 10 * 10, max(scores_pp) // 10 * 10 + 11, 10)
 

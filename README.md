@@ -42,6 +42,13 @@ Using ```osu!plot [username] [mode]``` will display basic statistics on the user
 
 [Return to table of contents](#basic-commands)
 
+### osu!bar
+Using ```osu!bar [mode] [number]``` displays the following embed, containing a list of countries that top osu! players are from, as well as a bar chart showing their distribution. The command can take optionally specified arguments mode and number, which default to osu! standard and 100 users, respectively.
+
+<img src="https://user-images.githubusercontent.com/66392457/233773205-ab4c3d26-3f85-4ea2-ae4f-8e755a4f3e76.png" width=500 />
+
+[Return to table of contents](#basic-commands)
+
 
 
 

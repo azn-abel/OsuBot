@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 from pytz import UTC
 import pycountry
@@ -6,7 +5,6 @@ import numpy as np
 import io
 import logging
 
-import api
 from api import refresh_token
 import plotting
 from customembeds import *
@@ -19,13 +17,8 @@ if os.getenv('PYCHARM_HOSTED'):
 import requests
 import math
 
-from asyncio import Queue
-
 logger = logging.getLogger('discord')
 shard_logger = logging.getLogger('discord.shard')
-
-task_queue = Queue()
-
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True,
@@ -50,7 +43,8 @@ def get_guilds():
 initial_num_guilds = len(get_guilds())
 
 total_shards = math.ceil(initial_num_guilds / 1000)
-client = commands.AutoShardedBot(command_prefix=['osu!'], intents=intents, shard_count=total_shards)
+prefixes = ['osu!', 'Osu!', 'OSu!', 'OSU!', 'oSU!', 'osU!', 'oSu!', 'OsU!']
+client = commands.AutoShardedBot(command_prefix=prefixes, intents=intents, shard_count=total_shards)
 
 
 @client.command()
@@ -123,7 +117,9 @@ async def plot(ctx, username, mode: str = "osu"):
     buffer.close()
 
     embed = discord.Embed(
-        title=f":flag_{user['country_code'].lower()}: #{user['statistics']['global_rank']:,} {user['username']}'s Top {len(scores)} osu!{mode if mode != 'osu' else ''} Plays",
+        title=(f":flag_{user['country_code'].lower()}: "
+               f"#{user['statistics']['global_rank']:,} "
+               f"{user['username']}'s Top {len(scores)} osu!{mode if mode != 'osu' else ''} Plays"),
         colour=0xff79b8
     )
 
@@ -148,13 +144,6 @@ async def plot(ctx, username, mode: str = "osu"):
 
     embed.set_image(url="attachment://plot.png")
     await ctx.reply(file=temp_file, embed=embed)
-
-
-async def process_task_queue():
-    while True:
-        task_coroutine = await task_queue.get()
-        result = await task_coroutine
-        print(result)
 
 
 @client.command()

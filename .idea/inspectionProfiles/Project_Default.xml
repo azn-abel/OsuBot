@@ -4,12 +4,13 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="5">
+          <list size="6">
             <item index="0" class="java.lang.String" itemvalue="asyncio" />
             <item index="1" class="java.lang.String" itemvalue="pickle" />
             <item index="2" class="java.lang.String" itemvalue="psycopg2" />
             <item index="3" class="java.lang.String" itemvalue="datetime" />
             <item index="4" class="java.lang.String" itemvalue="tzlocal" />
+            <item index="5" class="java.lang.String" itemvalue="discord" />
           </list>
         </value>
       </option>
@@ -18,6 +19,7 @@
       <option name="ignoredErrors">
         <list>
           <option value="E222" />
+          <option value="E501" />
         </list>
       </option>
     </inspection_tool>

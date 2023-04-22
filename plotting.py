@@ -1,4 +1,3 @@
-import api
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -117,11 +116,3 @@ def bar_ranks(rankings: list):
     image_bytes = buffer.getvalue()
     buffer.close()
     return image_bytes, top_countries_dict
-
-
-# if __name__ == "__main__":
-#     # scores = api.get_scores("btmc", "osu", "best", 100)
-#     # histogram_scores(scores)
-#     rankings = await api.get_rankings('osu', 2)
-#     bar_ranks(rankings)
-#     pass

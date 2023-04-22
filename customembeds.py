@@ -1,5 +1,3 @@
-import asyncio
-
 import discord
 from datetime import datetime
 from emoji import *
@@ -80,7 +78,7 @@ async def single_score_embed(username, mode, arg, score_type):
         name=f'Rank: {rank_emoji[play_data["rank"]]} FC' if play_data[
             'perfect'] else f'Rank: {rank_emoji[play_data["rank"]]}',
         value=f"- **Accuracy:** {round(play_data['accuracy'] * 100, 2)}% "
-              f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
+              f"[{stats['count_300']}/{stats['count_100']}/{stats['count_50']}/{stats['count_miss']}]\n"
               f"- **Score:** {play_data['score']}\n"
               f"- **Combo:** {play_data['max_combo']}/{beatmap_data['max_combo']}\n"
               f"- **pp:** {play_data['pp'] if play_data['pp'] else 'N/A'}",
@@ -127,14 +125,16 @@ async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
         beatmapset = score_data['beatmapset']
         mods_string = '+' + ''.join(score_data['mods']) if score_data['mods'] else ''
 
+        print(stats)
         score_string = (
             (f'**Rank:** {rank_emoji[score_data["rank"]]} FC | ' if score_data[
                 'perfect'] else f'**Rank:** {rank_emoji[score_data["rank"]]} | ') +
             f"**Accuracy:** {round(score_data['accuracy'] * 100, 2)}% "
-            f"[{stats['count_300'] + stats['count_geki']}/{stats['count_100'] + stats['count_katu']}/{stats['count_50']}/{stats['count_miss']}]\n"
+            f"[{stats['count_300']}/{stats['count_100']}/{stats['count_50']}/{stats['count_miss']}]\n"
             f"**Score:** {score_data['score']} | **Combo:** {score_data['max_combo']}/{beatmap_data['max_combo']}"
         )
-        score_title = f"**{i + 1}. {beatmapset['title']} [{score_data['beatmap']['version']}] {score_data['beatmap']['difficulty_rating']}★ {mods_string} | {score_data['pp'] if score_data['pp'] else 'N/A'} pp**"
+        score_title = f"**{i + 1}. {beatmapset['title']} [{score_data['beatmap']['version']}] "\
+                      f"{score_data['beatmap']['difficulty_rating']}★ {mods_string} | {score_data['pp'] if score_data['pp'] else 'N/A'} pp**"
         score_url = f"https://osu.ppy.sh/scores/osu/{score_data['best_id']}" if score_data['best_id'] else score_data['beatmap']['url']
         scores_embed.add_field(
             name="",
@@ -148,11 +148,3 @@ async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
     )
 
     return scores_embed
-
-
-async def main():
-    await multiple_scores_embed("mrekk", "osu", False, "best", 10)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

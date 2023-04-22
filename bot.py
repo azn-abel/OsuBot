@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from pytz import UTC
+import pycountry
 import numpy as np
 import io
 import logging
@@ -18,8 +19,12 @@ if os.getenv('PYCHARM_HOSTED'):
 import requests
 import math
 
+from asyncio import Queue
+
 logger = logging.getLogger('discord')
 shard_logger = logging.getLogger('discord.shard')
+
+task_queue = Queue()
 
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -100,12 +105,12 @@ async def plot(ctx, username, mode: str = "osu"):
         else:
             mode = 'osu'
 
-    user = api.get_user(username, mode)
+    user = await api.get_user(username, mode)
     if 'error' in user.keys():
         await ctx.reply("Invalid username.")
         return
 
-    scores = api.get_scores(username, mode, "best", 100)
+    scores = await api.get_scores(username, mode, "best", 100)
 
     # Retrieve image from plotting module
     try:
@@ -145,8 +150,16 @@ async def plot(ctx, username, mode: str = "osu"):
     await ctx.reply(file=temp_file, embed=embed)
 
 
+async def process_task_queue():
+    while True:
+        task_coroutine = await task_queue.get()
+        result = await task_coroutine
+        print(result)
+
+
 @client.command()
-async def bar(ctx, num: int, mode: str = "osu"):
+async def bar(ctx, num: int = 100, mode: str = "osu"):
+
     if mode not in ['taiko', 'fruits', 'mania', 'osu']:
         if mode == 'catch':
             mode = 'fruits'
@@ -156,21 +169,39 @@ async def bar(ctx, num: int, mode: str = "osu"):
     if num > 1000:
         num = 1000
 
-    rankings = api.get_rankings(mode, num // 50 + 1)
+    rankings = await api.get_rankings(mode, num // 50 + 1 if num % 20 != 0 else num // 50)
     rankings = rankings[:num]
-    image_bytes = plotting.bar_ranks(rankings)
-
+    image_bytes, top_countries_dict = plotting.bar_ranks(rankings)
     buffer = io.BytesIO(image_bytes)
-    temp_file = discord.File(buffer, filename='bar.png')
+    plot_image_file = discord.File(buffer, filename='bar.png')
     buffer.close()
 
     embed = discord.Embed(
-        title=f"Countries of Top {num} osu!{mode if mode != 'osu' else ''} Players",
+        title=f"Top {num} osu!{mode if mode != 'osu' else ''} Players by Country",
         colour=0xff79b8
     )
+    mode_image_file = discord.File(f"images/mode-{mode}.png", filename='mode.png')
+    embed.set_thumbnail(url="attachment://mode.png")
+
+    countries_represented_string = ""
+    for country_code in top_countries_dict.keys():
+        country_name = pycountry.countries.get(alpha_2=country_code).name.title()
+        countries_represented_string += f'- **{country_name} ({country_code}):** {top_countries_dict[country_code]}\n'
+    embed.add_field(
+        name="**Top Countries represented:**",
+        value=countries_represented_string,
+        inline=False
+    )
+    # for country_code in top_countries_dict.keys():
+    #     country_name = pycountry.countries.get(alpha_2=country_code).name.title()
+    #     embed.add_field(
+    #         name="",
+    #         value=f'**{country_name}({country_code}):** {top_countries_dict[country_code]}',
+    #         inline=True
+    #     )
 
     embed.set_image(url="attachment://bar.png")
-    await ctx.reply(file=temp_file, embed=embed)
+    await ctx.reply(files=[plot_image_file, mode_image_file], embed=embed)
 
 
 @client.command(aliases=['t', 'T'])

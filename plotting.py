@@ -1,6 +1,8 @@
 import api
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
+import time
 import io
 
 
@@ -69,26 +71,44 @@ def histogram_scores(scores: list):
 def bar_ranks(rankings: list):
     plt.clf()
     plt.rcParams.update({'font.size': 14})
-    penis = [ranking['user']['country_code'] for ranking in rankings]
+    all_countries = [ranking['user']['country_code'] for ranking in rankings]
 
-    values = list(set(penis))
-    values.sort()
+    countries = list(set(all_countries))
+    countries.sort()
 
-    counts = [penis.count(country) for country in values]
+    # Algorithm to get indices of top three countries
+    counts = [all_countries.count(country) for country in countries]
+    sorted_counts = sorted(counts, reverse=True)
+    highest_indices = []
+    num_countries_to_list = 10 if len(countries) > 10 else len(countries)
+    for i in range(num_countries_to_list):
+        start = 0
+        index = counts.index(sorted_counts[i], start)
+        while index in highest_indices:
+            start = index + 1
+            index = counts.index(sorted_counts[i], start)
+        highest_indices.append(index)
 
-    plt.xlabel('Countries')
-    plt.ylabel('Counts')
+    top_countries_dict = {}
+    for index in highest_indices:
+        top_countries_dict[countries[index]] = counts[index]
+
+    plt.xlabel('Country')
+    plt.ylabel('Count')
 
     fig = plt.gcf()
-    len_values = len(values)
-    print(len_values)
+    len_values = len(countries)
+
     fig.set_size_inches(8.5 if len_values < 23 else len_values * 0.4, 6)
     plt.subplots_adjust(left=0.07, right=0.98, top=0.9, bottom=0.15)
 
-    plt.bar(values, counts, color="#ff79b8", edgecolor='white')
+    plt.bar(countries, counts, color="#ff79b8", edgecolor='white')
 
     # Create an in-memory binary stream
     buffer = io.BytesIO()
+
+    # Set the y-axis to show a maximum of 5 integer ticks
+    plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True, nbins=5))
 
     # Save the figure to the binary stream as bytes, clear plt
     plt.savefig(buffer, format='png')
@@ -97,12 +117,12 @@ def bar_ranks(rankings: list):
     # Return image bytes in png form, close buffer
     image_bytes = buffer.getvalue()
     buffer.close()
-    return image_bytes
+    return image_bytes, top_countries_dict
 
 
-if __name__ == "__main__":
-    # scores = api.get_scores("btmc", "osu", "best", 100)
-    # histogram_scores(scores)
-    rankings = api.get_rankings('osu', 2)
-    bar_ranks(rankings)
-    pass
+# if __name__ == "__main__":
+#     # scores = api.get_scores("btmc", "osu", "best", 100)
+#     # histogram_scores(scores)
+#     rankings = await api.get_rankings('osu', 2)
+#     bar_ranks(rankings)
+#     pass

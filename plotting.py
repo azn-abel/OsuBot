@@ -51,7 +51,7 @@ def histogram_scores(scores: list):
     # Set size and adjust margins
     fig = plt.gcf()
     fig.set_size_inches(10, 5)
-    plt.subplots_adjust(top=0.9, bottom=0.15)
+    plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.15)
 
     # Create an in-memory binary stream
     buffer = io.BytesIO()
@@ -71,27 +71,38 @@ def bar_ranks(rankings: list):
     plt.rcParams.update({'font.size': 14})
     penis = [ranking['user']['country_code'] for ranking in rankings]
 
-    x_values = list(set(penis))
-    x_values.sort()
+    values = list(set(penis))
+    values.sort()
 
-    y_values = [penis.count(country) for country in x_values]
+    counts = [penis.count(country) for country in values]
 
-    plt.xlabel('X-axis label')
-    plt.ylabel('Y-axis label')
-    plt.title('Bar chart title')
+    plt.xlabel('Countries')
+    plt.ylabel('Counts')
 
     fig = plt.gcf()
-    fig.set_size_inches(18, 4)
-    plt.subplots_adjust(left=0.05, right=0.98, top=0.9, bottom=0.15)
+    len_values = len(values)
+    print(len_values)
+    fig.set_size_inches(8.5 if len_values < 23 else len_values * 0.4, 6)
+    plt.subplots_adjust(left=0.07, right=0.98, top=0.9, bottom=0.15)
 
-    plt.bar(x_values, y_values)
+    plt.bar(values, counts, color="#ff79b8", edgecolor='white')
 
-    plt.show()
+    # Create an in-memory binary stream
+    buffer = io.BytesIO()
+
+    # Save the figure to the binary stream as bytes, clear plt
+    plt.savefig(buffer, format='png')
+    plt.clf()
+
+    # Return image bytes in png form, close buffer
+    image_bytes = buffer.getvalue()
+    buffer.close()
+    return image_bytes
 
 
 if __name__ == "__main__":
     # scores = api.get_scores("btmc", "osu", "best", 100)
     # histogram_scores(scores)
-    rankings = api.get_rankings('osu', 3)
+    rankings = api.get_rankings('osu', 2)
     bar_ranks(rankings)
     pass

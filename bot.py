@@ -145,6 +145,34 @@ async def plot(ctx, username, mode: str = "osu"):
     await ctx.reply(file=temp_file, embed=embed)
 
 
+@client.command()
+async def bar(ctx, num: int, mode: str = "osu"):
+    if mode not in ['taiko', 'fruits', 'mania', 'osu']:
+        if mode == 'catch':
+            mode = 'fruits'
+        else:
+            mode = 'osu'
+
+    if num > 1000:
+        num = 1000
+
+    rankings = api.get_rankings(mode, num // 50 + 1)
+    rankings = rankings[:num]
+    image_bytes = plotting.bar_ranks(rankings)
+
+    buffer = io.BytesIO(image_bytes)
+    temp_file = discord.File(buffer, filename='bar.png')
+    buffer.close()
+
+    embed = discord.Embed(
+        title=f"Countries of Top {num} osu!{mode if mode != 'osu' else ''} Players",
+        colour=0xff79b8
+    )
+
+    embed.set_image(url="attachment://bar.png")
+    await ctx.reply(file=temp_file, embed=embed)
+
+
 @client.command(aliases=['t', 'T'])
 async def top(ctx, username: str, *args: str):
     if args and args[0] in ['taiko', 'fruits', 'mania', 'catch']:

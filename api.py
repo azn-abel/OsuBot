@@ -66,7 +66,7 @@ def get_rankings(mode: str, pages: int):
     return rtn_rankings
 
 
-asyncio.run(refresh_token())
+# asyncio.run(refresh_token())
 
 
 if __name__ == "__main__":

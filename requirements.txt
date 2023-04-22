@@ -3,4 +3,5 @@ requests
 numpy
 matplotlib
 aiohttp
+pycountry
 pytz

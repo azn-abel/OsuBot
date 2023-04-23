@@ -4,7 +4,7 @@ from matplotlib.ticker import MaxNLocator
 import io
 
 
-def scatter_scores(scores: list):
+async def scatter_scores(scores: list):
     plt.clf()
     # Data
     x_values = [i for i in range(0, len(scores))]
@@ -30,7 +30,7 @@ def scatter_scores(scores: list):
     return image_bytes
 
 
-def histogram_scores(scores: list):
+async def histogram_scores(scores: list):
     plt.clf()
     plt.rcParams.update({'font.size': 16})
     scores_pp = [score['pp'] for score in scores]
@@ -66,7 +66,7 @@ def histogram_scores(scores: list):
     return image_bytes
 
 
-def bar_ranks(rankings: list):
+async def bar_ranks(rankings: list):
     plt.clf()
     plt.rcParams.update({'font.size': 14})
     all_countries = [ranking['user']['country_code'] for ranking in rankings]

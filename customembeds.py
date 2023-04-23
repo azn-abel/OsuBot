@@ -4,7 +4,7 @@ from emoji import *
 import api
 
 
-async def info_embed(username, mode, arg):
+async def info_embed(username, mode):
     try:
         user_data = await api.get_user(username, mode)
         statistics = user_data['statistics']
@@ -14,7 +14,7 @@ async def info_embed(username, mode, arg):
         raise Exception('Invalid username.')
 
     reply_embed = discord.Embed(
-        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{arg if arg else ''} Profile",
+        title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{mode if mode != 'osu' else ''} Profile",
         colour=0xff79b8
     )
 
@@ -36,13 +36,13 @@ async def info_embed(username, mode, arg):
     datetime_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
     formatted_date = datetime_obj.strftime('%d %B %Y')
     reply_embed.set_footer(
-        text=f"{user_data['username']} joined osu!{mode if arg else ''} on {formatted_date}",
+        text=f"{user_data['username']} joined osu!{mode if mode != 'osu' else mode} on {formatted_date}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
     return reply_embed
 
 
-async def single_score_embed(username, mode, arg, score_type):
+async def single_score_embed(username, mode, score_type):
 
     user_data = await api.get_user(username, mode)
     if 'error' in user_data.keys():
@@ -91,14 +91,14 @@ async def single_score_embed(username, mode, arg, score_type):
     formatted_date = datetime_obj.strftime('%d %B %Y %H:%M UTC')
 
     score_embed.set_footer(
-        text=f"Recent play by {user_data['username']} on osu!{mode if arg else ''} - {formatted_date}",
+        text=f"Recent play by {user_data['username']} on osu!{mode if mode != 'osu' else mode} - {formatted_date}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
 
     return score_embed
 
 
-async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
+async def multiple_scores_embed(username, mode, score_type, num_scores):
 
     user_data = await api.get_user(username, mode)
     if 'error' in user_data.keys():
@@ -143,7 +143,7 @@ async def multiple_scores_embed(username, mode, arg, score_type, num_scores):
         )
 
     scores_embed.set_footer(
-        text=f"{score_type.capitalize()} plays by {user_data['username']} on osu!{mode if arg else ''}",
+        text=f"{score_type.capitalize()} plays by {user_data['username']} on osu!{mode if mode != 'osu' else mode}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
 

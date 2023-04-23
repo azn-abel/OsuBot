@@ -87,7 +87,3 @@ async def get_rankings(mode: str, pages: int):
     end_time = time.time()
     print(f"Requesting data: {end_time - start_time}")
     return rtn_rankings
-
-
-# asyncio.run(refresh_token())
-

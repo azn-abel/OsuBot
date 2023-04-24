@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 import aiohttp
@@ -71,18 +72,22 @@ async def get_rankings(mode: str, pages: int):
                "Content-Type": "application/json",
                "Authorization": f"Bearer {API_ACCESS_TOKEN}"}
 
-    # conn = http.client.HTTPSConnection("osu.ppy.sh")
-
     rtn_rankings = []
-    async with aiohttp.ClientSession(headers=headers) as session:
-        for i in range(1, pages + 1):
+    session = aiohttp.ClientSession(headers=headers)
 
-            url = f"https://osu.ppy.sh/api/v2/rankings/{mode}/performance?cursor[page]={i}&filter=all"
-            async with session.get(url) as response_raw:
-                response = await response_raw.json()
+    async def fetch_ranks(page):
+        nonlocal rtn_rankings
+        url = f"https://osu.ppy.sh/api/v2/rankings/{mode}/performance?cursor[page]={page}&filter=all"
+        async with session.get(url) as response_raw:
+            response = await response_raw.json()
 
-            rankings = response['ranking']
-            rtn_rankings += [ranking for ranking in rankings]
+        rankings = response['ranking']
+        rtn_rankings += [ranking for ranking in rankings]
+
+    todo = [fetch_ranks(page) for page in range(1, pages + 1)]
+    await asyncio.gather(*todo)
+
+    await session.close()
 
     end_time = time.time()
     print(f"Requesting data: {end_time - start_time}")

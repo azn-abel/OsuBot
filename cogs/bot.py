@@ -1,3 +1,5 @@
+import time
+
 from discord.ext import commands
 from pytz import UTC
 from customembeds import *
@@ -16,7 +18,10 @@ class Bot(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
+        s = time.time()
         await ctx.reply('pong <:PokeSlow:788414310762283050>')
+        e = time.time()
+        print(f"Response time: {e - s}")
 
     @commands.command(aliases=['i', 'I'])
     async def info(self, ctx, username: str, mode: str = None):
@@ -100,8 +105,8 @@ class Bot(commands.Cog):
     async def bar(self, ctx, num: int = 100, mode: str = "osu"):
         mode = await check_mode(mode)
 
-        if num > 1000:
-            num = 1000
+        if num > 10000:
+            num = 10000
 
         rankings = await api.get_rankings(mode, num // 50 + 1 if num % 20 != 0 else num // 50)
         rankings = rankings[:num]

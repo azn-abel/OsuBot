@@ -105,8 +105,8 @@ class Bot(commands.Cog):
     async def bar(self, ctx, num: int = 100, mode: str = "osu"):
         mode = await check_mode(mode)
 
-        if num > 10000:
-            num = 10000
+        if num > 1000:
+            num = 1000
 
         rankings = await api.get_rankings(mode, num // 50 + 1 if num % 20 != 0 else num // 50)
         rankings = rankings[:num]

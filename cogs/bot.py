@@ -147,9 +147,9 @@ class Bot(commands.Cog):
 
     @commands.command()
     async def time(self, ctx):
-        time_string = datetime.now(UTC).strftime('%d %B %Y %H:%M UTC')
+        time_string = "<t:" + str(round(time.time())) + ">"
         embed = discord.Embed(
-            title="Current Time (UTC)",
+            title="Current Time",
             description=time_string,
             colour=discord.Colour.blue()
         )

@@ -125,7 +125,6 @@ async def multiple_scores_embed(username, mode, score_type, num_scores):
         beatmapset = score_data['beatmapset']
         mods_string = '+' + ''.join(score_data['mods']) if score_data['mods'] else ''
 
-        print(stats)
         score_string = (
             (f'**Rank:** {rank_emoji[score_data["rank"]]} FC | ' if score_data[
                 'perfect'] else f'**Rank:** {rank_emoji[score_data["rank"]]} | ') +

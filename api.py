@@ -39,6 +39,9 @@ async def get_user(username, mode="osu"):
         async with session.get(url) as response:
             data = await response.json()
 
+    if 'error' in data.keys():
+        raise Exception("Invalid username.")
+
     return data
 
 

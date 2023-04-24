@@ -67,13 +67,27 @@ class OsuBot(commands.AutoShardedBot):
         await self.change_presence(activity=discord.Game(name="osu!"))
 
     async def on_guild_join(self, guild):
+        # TODO - Add the guild as a row in an SQL table somewhere
         num_guilds = len(get_guilds())
         self.logger.info(f'Joined guild "{guild.name}" ({guild.id})')
         self.logger.info(f'osu! Ranking is online in {num_guilds} guilds.')
 
+    async def on_guild_remove(self, guild):
+        # TODO - Cleanup the guild from SQL table
+        num_guilds = len(get_guilds())
+        self.logger.info(f'Removed from guild "{guild.name}" ({guild.id})')
+        self.logger.info(f'osu! Ranking is online in {num_guilds} guilds.')
+
     async def on_command_error(self, ctx, error):
-        self.logger.error(f"Error in command osu!{ctx.command} {ctx.kwargs}: {error}")
+        self.logger.error(
+            f"Error in command osu!{ctx.command if ctx.command else ''}{ctx.kwargs if ctx.kwargs else ''}: {error}"
+        )
         await ctx.reply(error)
+
+    async def on_error(self, event, *args, **kwargs):
+        self.logger.error(
+            f"Error in event {event}{args if args else ''}{kwargs if kwargs else ''}"
+        )
 
     async def on_shard_ready(self, shard_id):
         self.logger.info(f'Shard ID {shard_id} "{self.custom_shard_names[shard_id]}" is ready')

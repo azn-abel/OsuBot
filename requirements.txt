@@ -6,3 +6,4 @@ aiohttp~=3.8.4
 pycountry~=22.3.5
 pytz~=2023.3
 colorlog~=6.7.0
+asyncpg~=0.27.0

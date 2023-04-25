@@ -1,3 +1,4 @@
+import asyncpg.exceptions
 import discord.mentions
 import time
 
@@ -28,7 +29,7 @@ class Bot(commands.Cog):
     @commands.command(aliases=['i', 'I'])
     async def info(self, ctx, username: Union[discord.Member, str], mode: str = None):
         try:
-            username, mode = await check_username_and_mode(username, mode)
+            username, mode = await check_username_and_mode(username, mode, self.client.db)
             reply_embed = await info_embed(username, mode)
             await ctx.reply(embed=reply_embed)
         except Exception as e:
@@ -38,7 +39,7 @@ class Bot(commands.Cog):
     async def recent(self, ctx, username: Union[discord.Member, str], *args):
 
         try:
-            username, mode = await check_username_and_mode(username, args[0] if args else 'osu')
+            username, mode = await check_username_and_mode(username, args[0] if args else None, self.client.db)
             if "-d" in args or "-D" in args:
                 recent_embed = await multiple_scores_embed(username, mode, 'recent', 5)
             else:
@@ -50,7 +51,7 @@ class Bot(commands.Cog):
     @commands.command()
     async def plot(self, ctx, username: Union[discord.Member, str], mode: str = "osu"):
         try:
-            username, mode = await check_username_and_mode(username, mode)
+            username, mode = await check_username_and_mode(username, mode, self.client.db)
             user = await api.get_user(username, mode)
             if 'error' in user.keys():
                 await ctx.reply("Invalid username.")
@@ -136,7 +137,7 @@ class Bot(commands.Cog):
     @commands.command(aliases=['t', 'T'])
     async def top(self, ctx, username: Union[discord.Member, str], *args: str):
         try:
-            username, mode = await check_username_and_mode(username, args[0] if args else 'osu')
+            username, mode = await check_username_and_mode(username, args[0] if args else None, self.client.db)
             if "-d" in args or "-D" in args:
                 top_embed = await multiple_scores_embed(username, mode, 'best', 5)
             else:
@@ -156,7 +157,7 @@ class Bot(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.command()
-    async def link(self, ctx, osu_name):
+    async def link(self, ctx, osu_name, mode=None):
         # TODO - Add the user's Discord ID and osu! name to a SQL table somewhere
         try:
             user = await api.get_user(osu_name, 'osu')
@@ -165,9 +166,27 @@ class Bot(commands.Cog):
             return
 
         if user['discord'] == str(ctx.author):
-            await ctx.reply("That is, in fact, you.")
+            username = user['username']
+            discord_id = str(ctx.author.id)
+            mode = await check_mode(mode)
+            try:
+                await self.client.db.execute("INSERT INTO discord_users VALUES($1, $2, $3)", discord_id, username, mode)
+                await ctx.reply("Successfully linked accounts!")
+            except asyncpg.exceptions.UniqueViolationError:
+                await self.client.db.execute("UPDATE discord_users "
+                                             "SET osu_name = $1, mode = $2 "
+                                             "WHERE discord_id = $3", username, mode, discord_id)
+                await ctx.reply("Successfully updated information!")
         else:
             await ctx.reply("Liar, liar, pants on fire.")
+
+    @commands.command(name='shutdown')
+    @commands.is_owner()
+    async def shutdown_bot(self, ctx):
+        await self.client.db.close()
+        self.client.logger.info("Connection pool closed.")
+        self.client.logger.info("Shutting down...")
+        await self.client.close()
 
 
 async def setup(client):

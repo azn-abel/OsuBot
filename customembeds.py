@@ -91,7 +91,7 @@ async def single_score_embed(username, mode, score_type):
     formatted_date = datetime_obj.strftime('%d %B %Y %H:%M UTC')
 
     score_embed.set_footer(
-        text=f"Recent play by {user_data['username']} on osu!{mode if mode != 'osu' else mode} - {formatted_date}",
+        text=f"Play by {user_data['username']} on osu!{mode if mode != 'osu' else mode} - {formatted_date}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
 

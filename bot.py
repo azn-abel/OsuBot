@@ -61,13 +61,18 @@ class OsuBot(commands.AutoShardedBot):
         self.db = DatabaseManager(os.getenv('DSN'))
 
     async def on_ready(self):
+        print(os.getenv('DSN'))
         self.logger.info(f'osu! Rankings is online in {len(get_guilds())} guilds.')
         try:
             refresh_token.start(logger=self.logger)
             self.logger.info("Started refresh_token loop.")
         except RuntimeError:
             self.logger.info("refresh_token loop already in progress - no need to restart it.")
-        await self.db.connect()
+        try:
+            await self.db.connect()
+            self.logger.info("Sucessfully connected to Postgres.")
+        except Exception as e:
+            self.logger.info(str(e))
         await self.change_presence(activity=discord.Game(name="osu!"))
 
     async def on_guild_join(self, guild):
@@ -95,3 +100,4 @@ class OsuBot(commands.AutoShardedBot):
 
     async def on_shard_ready(self, shard_id):
         self.logger.info(f'Shard ID {shard_id} "{self.custom_shard_names[shard_id]}" is ready')
+

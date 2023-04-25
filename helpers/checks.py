@@ -21,7 +21,6 @@ async def check_username_and_mode(user, mode, db=None):
             username = row['osu_name']
             if not mode or mode[0] == "-":
                 mode = row['mode']
-                print(mode)
             mode = await check_mode(mode)
         except Exception as e:
             raise Exception("Mentioned user has not linked their osu! account.")

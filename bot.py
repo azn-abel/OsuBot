@@ -61,7 +61,6 @@ class OsuBot(commands.AutoShardedBot):
         self.db = DatabaseManager(os.getenv('DSN'))
 
     async def on_ready(self):
-        print(os.getenv('DSN'))
         self.logger.info(f'osu! Rankings is online in {len(get_guilds())} guilds.')
         try:
             refresh_token.start(logger=self.logger)

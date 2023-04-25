@@ -7,15 +7,18 @@ class DatabaseManager:
     # Singleton design pattern
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super().__new__(cls, *args, **kwargs)
+            cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self, dsn):
         self.dsn = dsn
         self.pool = None
 
-    async def initialize(self):
+    async def connect(self):
         self.pool = await asyncpg.create_pool(dsn=self.dsn)
+
+    async def close(self):
+        await self.pool.close()
 
     async def execute(self, query, *args):
         async with self.pool.acquire() as conn:

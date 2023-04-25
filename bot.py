@@ -4,6 +4,7 @@ import colorlog
 
 from api import refresh_token
 from customembeds import *
+from database import DatabaseManager
 
 import os
 
@@ -57,6 +58,8 @@ class OsuBot(commands.AutoShardedBot):
 
         self.custom_shard_names = ["Foo", "Bar", "Baz"]
 
+        self.db = DatabaseManager(os.getenv('DSN'))
+
     async def on_ready(self):
         self.logger.info(f'osu! Rankings is online in {len(get_guilds())} guilds.')
         try:
@@ -64,6 +67,7 @@ class OsuBot(commands.AutoShardedBot):
             self.logger.info("Started refresh_token loop.")
         except RuntimeError:
             self.logger.info("refresh_token loop already in progress - no need to restart it.")
+        await self.db.connect()
         await self.change_presence(activity=discord.Game(name="osu!"))
 
     async def on_guild_join(self, guild):

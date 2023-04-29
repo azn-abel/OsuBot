@@ -1,6 +1,7 @@
 import discord
 from datetime import datetime
 from emoji import *
+from helpers.ppCalculation import computeTotalValue
 import api
 
 
@@ -49,44 +50,47 @@ async def single_score_embed(username, mode, score_type):
         raise Exception('Invalid username.')
 
     try:
-        play_data = await api.get_scores(username, mode, score_type)
-        play_data = play_data[0]
-        beatmapset = play_data['beatmapset']
+        score = await api.get_scores(username, mode, score_type)
+        score = score[0]
+        beatmapset = score['beatmapset']
     except Exception:
         raise Exception(f'No {score_type} plays.')
 
-    beatmap_data = await api.get_beatmap(play_data['beatmap']['id'])
+    beatmap = await api.get_beatmap(score['beatmap']['id'])
+    attributes = (await api.get_beatmap_attributes(score['beatmap']['id'], mode, mods=score['mods']))['attributes']
+    possible_pp, fc_accuracy = computeTotalValue(score, beatmap, attributes)
+
     mods_string = ''
-    for mod in play_data['mods']:
+    for mod in score['mods']:
         mods_string += f"{mod} "
     score_embed = discord.Embed(
-        description=f'Modifiers: {mods_string}' if play_data['mods'] else '',
+        description=f'Modifiers: {mods_string}' if score['mods'] else '',
         colour=0xff79b8
     )
     score_embed.set_author(
-        name=f"{beatmapset['title']} [{play_data['beatmap']['version']}] {play_data['beatmap']['difficulty_rating']}★",
+        name=f"{beatmapset['title']} [{score['beatmap']['version']}] {score['beatmap']['difficulty_rating']}★",
         icon_url="https://a.ppy.sh/" if user_data['avatar_url'] == '/images/layout/avatar-guest.png' else user_data[
             'avatar_url'],
-        url=f"https://osu.ppy.sh/scores/osu/{play_data['best_id']}" if play_data['best_id'] else
-        play_data['beatmap']['url']
+        url=f"https://osu.ppy.sh/scores/osu/{score['best_id']}" if score['best_id'] else
+        score['beatmap']['url']
     )
     score_embed.set_thumbnail(
-        url=play_data['beatmapset']['covers']['list']
+        url=score['beatmapset']['covers']['list']
     )
-    stats = play_data['statistics']
+    stats = score['statistics']
     score_embed.add_field(
-        name=f'Rank: {rank_emoji[play_data["rank"]]} FC' if play_data[
-            'perfect'] else f'Rank: {rank_emoji[play_data["rank"]]}',
-        value=f"- **Accuracy:** {round(play_data['accuracy'] * 100, 2)}% "
+        name=f'Rank: {rank_emoji[score["rank"]]} FC' if score[
+            'perfect'] else f'Rank: {rank_emoji[score["rank"]]}',
+        value=f"- **Accuracy:** {round(score['accuracy'] * 100, 2)}% "
               f"[{stats['count_300']}/{stats['count_100']}/{stats['count_50']}/{stats['count_miss']}]\n"
-              f"- **Score:** {play_data['score']}\n"
-              f"- **Combo:** {play_data['max_combo']}/{beatmap_data['max_combo']}\n"
-              f"- **pp:** {play_data['pp'] if play_data['pp'] else 'N/A'}",
+              f"- **Score:** {score['score']}\n"
+              f"- **Combo:** {score['max_combo']}/{beatmap['max_combo']}\n"
+              f"- **pp:** {score['pp'] if score['pp'] else 'N/A'} / {round(possible_pp, 3)} for {round(fc_accuracy * 100, 2)}% FC",
 
         inline=False
     )
 
-    date_string = play_data['created_at']
+    date_string = score['created_at']
     datetime_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
     formatted_date = datetime_obj.strftime('%d %B %Y %H:%M UTC')
 

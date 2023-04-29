@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 
 import aiohttp
@@ -65,6 +66,20 @@ async def get_beatmap(beatmap_id):
                "Authorization": f"Bearer {API_ACCESS_TOKEN}"}
     async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(f"https://osu.ppy.sh/api/v2/beatmaps/{beatmap_id}") as response:
+            data = await response.json()
+            return data
+
+
+async def get_beatmap_attributes(beatmap_id, mode="osu", mods=None):
+    if mods is None:
+        mods = []
+    headers = {"Accept": "application/json",
+               "Content-Type": "application/json",
+               "Authorization": f"Bearer {API_ACCESS_TOKEN}"}
+    mods_string = "&".join(["mods[]=" + mod.upper() for mod in mods])
+    async with aiohttp.ClientSession(headers=headers) as session:
+        endpoint = f"https://osu.ppy.sh/api/v2/beatmaps/{beatmap_id}/attributes?ruleset={mode}&{mods_string}"
+        async with session.post(endpoint) as response:
             data = await response.json()
             return data
 

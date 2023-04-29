@@ -3,7 +3,6 @@ import discord.mentions
 import time
 
 from discord.ext import commands
-from pytz import UTC
 from customembeds import *
 import plotting
 import numpy as np
@@ -104,7 +103,7 @@ class Bot(commands.Cog):
         if num > 1000:
             num = 1000
 
-        rankings = await api.get_rankings(mode, num // 50 + 1 if num % 20 != 0 else num // 50)
+        rankings = await api.get_rankings(mode, num // 50 + 1 if num % 50 != 0 else num // 50)
         rankings = rankings[:num]
 
         image_bytes, top_countries_dict = await plotting.bar_ranks(rankings)

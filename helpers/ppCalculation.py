@@ -4,9 +4,9 @@ import math
 def computeTotalValue(score, beatmap, attributes):
 
     def getComboScalingFactor():
-        maxCombo = beatmap['max_combo']
-        if maxCombo > 0:
-            return min((score['max_combo'] ** 0.8) / (maxCombo ** 0.8), 1.0)
+        # maxCombo = beatmap['max_combo']
+        # if maxCombo > 0:
+        #     return min((score['max_combo'] ** 0.8) / (maxCombo ** 0.8), 1.0)
         return 1.0
 
     def TotalHits():

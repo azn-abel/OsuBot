@@ -37,7 +37,7 @@ async def info_embed(username, mode):
     datetime_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
     formatted_date = datetime_obj.strftime('%d %B %Y')
     reply_embed.set_footer(
-        text=f"{user_data['username']} joined osu!{mode if mode != 'osu' else mode} on {formatted_date}",
+        text=f"{user_data['username']} joined osu!{mode if mode != 'osu' else ''} on {formatted_date}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
     return reply_embed
@@ -95,7 +95,7 @@ async def single_score_embed(username, mode, score_type):
     formatted_date = datetime_obj.strftime('%d %B %Y %H:%M UTC')
 
     score_embed.set_footer(
-        text=f"Play by {user_data['username']} on osu!{mode if mode != 'osu' else mode} - {formatted_date}",
+        text=f"Play by {user_data['username']} on osu!{mode if mode != 'osu' else ''} - {formatted_date}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
 
@@ -141,12 +141,12 @@ async def multiple_scores_embed(username, mode, score_type, num_scores):
         score_url = f"https://osu.ppy.sh/scores/osu/{score_data['best_id']}" if score_data['best_id'] else score_data['beatmap']['url']
         scores_embed.add_field(
             name="",
-            value=f"[{score_title}]({score_url}) {score_string}",
+            value=f"[{score_title}]({score_url}) \n{score_string}",
             inline=False
         )
 
     scores_embed.set_footer(
-        text=f"{score_type.capitalize()} plays by {user_data['username']} on osu!{mode if mode != 'osu' else mode}",
+        text=f"{score_type.capitalize()} plays by {user_data['username']} on osu!{mode if mode != 'osu' else ''}",
         icon_url=f"https://cdn.discordapp.com/emojis/{mode_emoji[mode].split(':')[-1][:-1]}.png?v=1"
     )
 

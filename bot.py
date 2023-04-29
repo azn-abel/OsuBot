@@ -71,7 +71,7 @@ class OsuBot(commands.AutoShardedBot):
             await self.db.connect()
             self.logger.info("Sucessfully connected to Postgres.")
         except Exception as e:
-            self.logger.info(str(e))
+            self.logger.warning("Database error: " + str(e))
         await self.change_presence(activity=discord.Game(name="osu!"))
 
     async def on_guild_join(self, guild):

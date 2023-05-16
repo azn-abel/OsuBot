@@ -36,7 +36,8 @@ class Bot(commands.Cog):
 
     @commands.command(aliases=['r', 'R'])
     async def recent(self, ctx, username: Union[discord.Member, str], *args):
-
+        if username.lower() == 'me':
+            username = ctx.message.author
         try:
             username, mode = await check_username_and_mode(username, args[0] if args else None, self.client.db)
             if "-d" in args or "-D" in args:

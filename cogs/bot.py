@@ -27,6 +27,8 @@ class Bot(commands.Cog):
 
     @commands.command(aliases=['i', 'I'])
     async def info(self, ctx, username: Union[discord.Member, str], mode: str = None):
+        if username.lower() == 'me':
+            username = ctx.message.author
         try:
             username, mode = await check_username_and_mode(username, mode, self.client.db)
             reply_embed = await info_embed(username, mode)
@@ -50,6 +52,8 @@ class Bot(commands.Cog):
 
     @commands.command()
     async def plot(self, ctx, username: Union[discord.Member, str], mode: str = "osu"):
+        if username.lower() == 'me':
+            username = ctx.message.author
         try:
             username, mode = await check_username_and_mode(username, mode, self.client.db)
             user = await api.get_user(username, mode)
@@ -136,6 +140,8 @@ class Bot(commands.Cog):
 
     @commands.command(aliases=['t', 'T'])
     async def top(self, ctx, username: Union[discord.Member, str], *args: str):
+        if username.lower() == 'me':
+            username = ctx.message.author
         try:
             username, mode = await check_username_and_mode(username, args[0] if args else None, self.client.db)
             if "-d" in args or "-D" in args:

@@ -16,6 +16,7 @@ async def info_embed(username, mode):
 
     reply_embed = discord.Embed(
         title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s osu!{mode if mode != 'osu' else ''} Profile",
+        url=f"https://osu.ppy.sh/users/{username}/{mode}",
         colour=0xff79b8
     )
 

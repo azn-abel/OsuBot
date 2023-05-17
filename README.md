@@ -10,6 +10,15 @@ Quick note: for any username in any command, if the username contains spaces, "i
 - [osu!plot](#osuplot)
 - [osu!bar](#osubar)
 
+### osu!link
+Before interacting with the bot, it's recommended that you link your osu! account to your discord account using ```osu!link [username] [preferred_mode]```. This will allow you to easily retrieve your own stats and scores by allowing you to type "me" instead of your full username when using commands. For example, you'd be able to use ```osu!recent me``` instead of ```osu!recent full_username```.
+
+Note: before running the ```osu!link``` command, you must provide your Discord username in your profile setting on https://osu.ppy.sh/home/account/edit, as shown below:
+
+<img src="https://github.com/azn-abel/OsuBot/assets/66392457/61d0c8da-82ce-4eb4-959e-8cd61c47e5ad" width=500 />
+
+[Return to table of contents](#basic-commands)
+
 ### osu!info
 Using ```osu!info [username] [mode]``` will return and display the cumulative stats of the specified user in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.
 

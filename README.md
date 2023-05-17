@@ -5,6 +5,7 @@ Add this bot to your Discord server: [Click here](https://discord.com/api/oauth2
 
 ## Basic Commands
 Quick note: for any username in any command, if the username contains spaces, "it will need quotation marks around it".
+- [osu!link](#osulink)
 - [osu!info](#osuinfo)
 - [osu!recent and osu!top](#osurecent-and-osutop)
 - [osu!plot](#osuplot)

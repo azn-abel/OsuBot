@@ -17,13 +17,12 @@ Note: before running the ```osu!link``` command, you must provide your Discord u
 
 <img src="https://github.com/azn-abel/OsuBot/assets/66392457/61d0c8da-82ce-4eb4-959e-8cd61c47e5ad" width=500 />
 
-
 [Return to table of contents](#basic-commands)
 
 ### osu!info
 Using ```osu!info [username] [mode]``` will return and display the cumulative stats of the specified user in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.
 
-<img src="https://user-images.githubusercontent.com/66392457/233444032-23e9937b-4d18-4fee-9836-4196f69c11d9.png" width=500 />
+<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/66392457/238826028-61d0c8da-82ce-4eb4-959e-8cd61c47e5ad.png" width=500 />
 
 [Return to table of contents](#basic-commands)
 

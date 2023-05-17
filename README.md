@@ -17,6 +17,7 @@ Note: before running the ```osu!link``` command, you must provide your Discord u
 
 <img src="https://github.com/azn-abel/OsuBot/assets/66392457/61d0c8da-82ce-4eb4-959e-8cd61c47e5ad" width=500 />
 
+
 [Return to table of contents](#basic-commands)
 
 ### osu!info

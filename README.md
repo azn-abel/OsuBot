@@ -15,14 +15,14 @@ Before interacting with the bot, it's recommended that you link your osu! accoun
 
 Note: before running the ```osu!link``` command, you must provide your Discord username in your profile setting on https://osu.ppy.sh/home/account/edit, as shown below:
 
-<img src="https://github.com/azn-abel/OsuBot/assets/66392457/61d0c8da-82ce-4eb4-959e-8cd61c47e5ad" width=500 />
+<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/66392457/238826028-61d0c8da-82ce-4eb4-959e-8cd61c47e5ad.png" width=500 />
 
 [Return to table of contents](#basic-commands)
 
 ### osu!info
 Using ```osu!info [username] [mode]``` will return and display the cumulative stats of the specified user in an optionally specified mode. If the mode is not specified, it displays the user's stats for osu! standard.
 
-<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/66392457/238826028-61d0c8da-82ce-4eb4-959e-8cd61c47e5ad.png" width=500 />
+<img src="https://user-images.githubusercontent.com/66392457/233444032-23e9937b-4d18-4fee-9836-4196f69c11d9.png" width=500 />
 
 [Return to table of contents](#basic-commands)
 
@@ -58,7 +58,6 @@ Using ```osu!bar [mode] [number]``` displays the following embed, containing a l
 <img src="https://user-images.githubusercontent.com/66392457/233773205-ab4c3d26-3f85-4ea2-ae4f-8e755a4f3e76.png" width=500 />
 
 [Return to table of contents](#basic-commands)
-
 
 
 

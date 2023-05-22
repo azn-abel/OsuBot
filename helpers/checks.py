@@ -25,7 +25,7 @@ async def check_username_and_mode(user, mode, db=None):
         except Exception as e:
             raise Exception("Mentioned user has not linked their osu! account.")
     else:
-        username = user
+        username = user.replace(" ", "%20")
         mode = await check_mode(mode)
 
     return username, mode

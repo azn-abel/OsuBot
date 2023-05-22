@@ -56,12 +56,12 @@ class Bot(commands.Cog):
             username = ctx.message.author
         try:
             username, mode = await check_username_and_mode(username, mode, self.client.db)
-            user = await api.get_user(username, mode)
+            user = await apiv2.get_user(username, mode)
             if 'error' in user.keys():
                 await ctx.reply("Invalid username.")
                 return
 
-            scores = await api.get_scores(username, mode, "best", 100)
+            scores = await apiv2.get_scores(username, mode, "best", 100)
 
             # Retrieve image from plotting module
             image_bytes = await plotting.histogram_scores(scores)
@@ -108,7 +108,7 @@ class Bot(commands.Cog):
         if num > 1000:
             num = 1000
 
-        rankings = await api.get_rankings(mode, num // 50 + 1 if num % 50 != 0 else num // 50)
+        rankings = await apiv2.get_rankings(mode, num // 50 + 1 if num % 50 != 0 else num // 50)
         rankings = rankings[:num]
 
         image_bytes, top_countries_dict = await plotting.bar_ranks(rankings)
@@ -166,7 +166,7 @@ class Bot(commands.Cog):
     async def link(self, ctx, osu_name, mode=None):
         # TODO - Add the user's Discord ID and osu! name to a SQL table somewhere
         try:
-            user = await api.get_user(osu_name, 'osu')
+            user = await apiv2.get_user(osu_name, 'osu')
         except Exception as e:
             await ctx.reply(e)
             return

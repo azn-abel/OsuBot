@@ -2,7 +2,7 @@ from discord.ext import commands
 import logging
 import colorlog
 
-from api import refresh_token
+from apiwrappers.apiv2 import refresh_token
 from customembeds import *
 from database import DatabaseManager
 

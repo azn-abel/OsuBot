@@ -2,12 +2,12 @@ import discord
 from datetime import datetime
 from emoji import *
 from helpers.ppCalculation import computeTotalValue
-import api
+from apiwrappers import apiv2
 
 
 async def info_embed(username, mode):
     try:
-        user_data = await api.get_user(username, mode)
+        user_data = await apiv2.get_user(username, mode)
         statistics = user_data['statistics']
         global_rank = statistics['global_rank']
         country_rank = statistics['country_rank']
@@ -46,19 +46,19 @@ async def info_embed(username, mode):
 
 async def single_score_embed(username, mode, score_type):
 
-    user_data = await api.get_user(username, mode)
+    user_data = await apiv2.get_user(username, mode)
     if 'error' in user_data.keys():
         raise Exception('Invalid username.')
 
     try:
-        score = await api.get_scores(username, mode, score_type)
+        score = await apiv2.get_scores(username, mode, score_type)
         score = score[0]
         beatmapset = score['beatmapset']
     except Exception:
         raise Exception(f'No {score_type} plays.')
 
-    beatmap = await api.get_beatmap(score['beatmap']['id'])
-    attributes = (await api.get_beatmap_attributes(score['beatmap']['id'], mode, mods=score['mods']))['attributes']
+    beatmap = await apiv2.get_beatmap(score['beatmap']['id'])
+    attributes = (await apiv2.get_beatmap_attributes(score['beatmap']['id'], mode, mods=score['mods']))['attributes']
     possible_pp, fc_accuracy = computeTotalValue(score, beatmap, attributes)
 
     mods_string = ''
@@ -105,11 +105,11 @@ async def single_score_embed(username, mode, score_type):
 
 async def multiple_scores_embed(username, mode, score_type, num_scores):
 
-    user_data = await api.get_user(username, mode)
+    user_data = await apiv2.get_user(username, mode)
     if 'error' in user_data.keys():
         raise Exception('Invalid username.')
 
-    scores_data = await api.get_scores(username, mode, score_type, num_scores)
+    scores_data = await apiv2.get_scores(username, mode, score_type, num_scores)
 
     scores_embed = discord.Embed(
         title=f":flag_{user_data['country_code'].lower()}: {user_data['username']}'s {score_type.capitalize()} Plays",
@@ -125,7 +125,7 @@ async def multiple_scores_embed(username, mode, score_type, num_scores):
         scores_embed.description = f"No {score_type} plays."
 
     for i, score_data in enumerate(scores_data):
-        beatmap_data = await api.get_beatmap(score_data['beatmap']['id'])
+        beatmap_data = await apiv2.get_beatmap(score_data['beatmap']['id'])
         stats = score_data['statistics']
         beatmapset = score_data['beatmapset']
         mods_string = '+' + ''.join(score_data['mods']) if score_data['mods'] else ''

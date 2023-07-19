@@ -26,7 +26,7 @@ class Bot(commands.Cog):
         print(f"Response time: {e - s}")
 
     @commands.command(aliases=['i', 'I'])
-    async def info(self, ctx, username: Union[discord.Member, str], mode: str = None):
+    async def info(self, ctx, username: str, mode: str = None):
         if username.lower() == 'me':
             username = ctx.message.author
         try:
@@ -37,7 +37,7 @@ class Bot(commands.Cog):
             await ctx.reply(e)
 
     @commands.command(aliases=['r', 'R'])
-    async def recent(self, ctx, username: Union[discord.Member, str], *args):
+    async def recent(self, ctx, username: str, *args):
         if username.lower() == 'me':
             username = ctx.message.author
         try:
@@ -51,7 +51,7 @@ class Bot(commands.Cog):
             await ctx.reply(e)
 
     @commands.command()
-    async def plot(self, ctx, username: Union[discord.Member, str], mode: str = "osu"):
+    async def plot(self, ctx, username: str, mode: str = "osu"):
         if username.lower() == 'me':
             username = ctx.message.author
         try:
@@ -139,7 +139,7 @@ class Bot(commands.Cog):
         await ctx.reply(files=[plot_image_file, mode_image_file], embed=embed)
 
     @commands.command(aliases=['t', 'T'])
-    async def top(self, ctx, username: Union[discord.Member, str], *args: str):
+    async def top(self, ctx, username: str, *args: str):
         if username.lower() == 'me':
             username = ctx.message.author
         try:
